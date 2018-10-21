@@ -36,7 +36,9 @@ public class databaseDriver {
     try {
       statement = connection.createStatement();
       
-      String sql = "TO DO, SOME SQL STATEMENTS";
+      String sql = "CREATE TABLE Test " 
+              + "(ID INTEGER PRIMARY KEY NOT NULL," 
+              + "NAME TEXT NOT NULL)";
       statement.executeUpdate(sql);
       
       statement.close();
