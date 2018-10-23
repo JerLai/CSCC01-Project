@@ -1,4 +1,4 @@
-package icare.accounts;
+package main.java.com.icare.accounts;
 
 public abstract class User {
 
