@@ -1,4 +1,4 @@
-package icare.database;
+package main.java.com.icare.database;
 
 
 import java.sql.Connection;

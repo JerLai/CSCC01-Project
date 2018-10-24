@@ -1,4 +1,4 @@
-package icare.database;
+package main.java.com.icare.database;
 
 
 import java.sql.Connection;
@@ -36,11 +36,20 @@ public class databaseDriver {
     try {
       statement = connection.createStatement();
       
-      String sql = "CREATE TABLE Test " 
+      String sql = "CREATE TABLE Login " 
               + "(ID INTEGER PRIMARY KEY NOT NULL," 
-              + "NAME TEXT NOT NULL)";
+              + "username TEXT NOT NULL,"
+              + "password char(64),"
+              + "role INTEGER NOT NULL)";
       statement.executeUpdate(sql);
       
+      sql = "CREATE TABLE Data " 
+              + "(ID INTEGER PRIMARY KEY NOT NULL," 
+              + "sample1 TEXT NOT NULL,"
+              + "sample2 TEXT NOT NULL,"
+              + "sample3 TEXT NOT NULL)";
+      
+      statement.executeUpdate(sql);
       statement.close();
       return true;
       

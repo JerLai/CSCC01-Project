@@ -1,6 +1,6 @@
 package main;
 
-import icare.database.makeDatabase;
+import main.java.com.icare.database.makeDatabase;
 
 public  class main {
 	

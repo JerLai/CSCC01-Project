@@ -1,4 +1,4 @@
-package icare.template;
+package main.java.com.icare.template;
 
 import java.util.ArrayList;
 

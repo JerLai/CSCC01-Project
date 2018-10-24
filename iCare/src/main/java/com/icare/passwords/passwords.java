@@ -1,4 +1,4 @@
-package icare.passwords;
+package main.java.com.icare.passwords;
 
 import java.security.MessageDigest;
 

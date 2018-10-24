@@ -1,0 +1,55 @@
+<<<<<<< HEAD
+
+.metadata/.lock
+.metadata/.log
+*.ini
+*.setup
+*.gen
+*.tis
+*.nrm
+*.index
+*.prefs
+*.fdt
+*.fdx
+*.fnm
+*.frq
+*.tii
+*.lock
+*.xml
+*.zip
+.metadata/.mylyn/.taskListIndex/segments_1
+.metadata/.plugins/org.eclipse.epp.logging.aeri.ide/org.eclipse.epp.logging.aeri.ide.server/local-history/segments_1
+.metadata/.plugins/org.eclipse.epp.logging.aeri.ide/org.eclipse.epp.logging.aeri.ide.server/remote-history/segments_1
+
+.metadata/*
+.recommenders/*
+
+iCare/bin/*
+iCare/.classpath
+=======
+.metadata/
+
+.recommenders/
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+
+# Avoid ignoring Maven wrapper jar file (.jar files are usually ignored)
+!/.mvn/wrapper/maven-wrapper.jar
+
+# eclipse project file
+.settings/
+.classpath
+.project
+
+# OS Files
+Thumbs.db
+.DS_Store
+bin/
+>>>>>>> master
