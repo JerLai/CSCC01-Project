@@ -1,14 +1,20 @@
 package main.java.com.icare.database;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import main.java.com.icare.passwords.passwords;
 
-public class databaseAPI {
+public class databaseAPI{
 
+	private static final String DELIMITER = ",";
 
 	public static boolean insertUser(Connection connection, String username, String password, String firstName, String lastName, String accountType) {
 
@@ -46,5 +52,55 @@ public class databaseAPI {
 			e.printStackTrace();
 		}
 		return false;
+	}
+
+	public static HashMap<String, ArrayList<String>> importData(String filename) {
+		BufferedReader csvReader = null;
+		HashMap <String, ArrayList<String>> fileData = new HashMap <String, ArrayList<String>>();
+
+		try {
+			String headers = null;
+			String line = null;
+			csvReader = new BufferedReader(new FileReader("resources/" + filename));
+
+			// read the first line to get the column headers
+			headers = csvReader.readLine();
+
+			// split the column headers
+			String[] columnHeaders = headers.split(DELIMITER, -1);
+
+			// add column headers as keys to fileData hashmap
+			for (String header : columnHeaders) {
+				fileData.put(header, new ArrayList<String>());
+			}
+
+			// go through each line
+			while ((line = csvReader.readLine()) != null) {
+				// split each line
+				String[] lineData = line.split(DELIMITER, -1);
+				// go through each piece of data and add to relevant column header's list
+				for (int i = 0; i < lineData.length; i++) {
+					ArrayList <String> columnData = fileData.get(columnHeaders[i]);
+					columnData.add(lineData[i]);
+				}
+			}
+		} catch (Exception e) {
+			System.out.println("Error while reading .csv file: " + filename);
+			e.printStackTrace();
+		} finally {
+			try {
+				csvReader.close();
+			} catch (IOException e) {
+				System.out.println("Error while closing .csv file: " + filename);
+				e.printStackTrace();
+			}
+		}
+
+		return fileData;
+	}
+
+	public static void exportData(HashMap<String, ArrayList<String>> fileData) {
+		// TODO Auto-generated method stub
+		
 	}
 }
