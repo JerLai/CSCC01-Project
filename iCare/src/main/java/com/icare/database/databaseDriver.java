@@ -9,7 +9,7 @@ import java.sql.Statement;
 
 public class databaseDriver {
 
-  protected static Connection connectOrCreateDataBase() {
+  protected static Connection connectDataBase() {
     Connection connection = null;
     try {
       Class.forName("org.sqlite.JDBC");
@@ -38,11 +38,12 @@ public class databaseDriver {
       
       String sql = "CREATE TABLE Login " 
               + "(ID INTEGER PRIMARY KEY NOT NULL," 
-              + "username TEXT NOT NULL,"
+              + "username char(64),"
               + "password char(64),"
-              + "role INTEGER NOT NULL)";
+              + "firstName char(64),"
+              + "lastName char(64),"
+              + "accountType char(64))";
       statement.executeUpdate(sql);
-      
       sql = "CREATE TABLE Data " 
               + "(ID INTEGER PRIMARY KEY NOT NULL," 
               + "sample1 TEXT NOT NULL,"

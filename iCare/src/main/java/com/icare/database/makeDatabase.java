@@ -11,11 +11,10 @@ public class makeDatabase {
 
   public static void initialize() {
     
-    Connection connection = databaseDriver.connectOrCreateDataBase();
+    Connection connection = databaseDriver.connectDataBase();
     try {
       
       initializeDatabase(connection);
-      // TO DO, arrange table format
     } catch (Exception e) {
       e.printStackTrace();
     } finally {
