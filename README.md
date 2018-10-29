@@ -10,3 +10,4 @@ Activity Log
 10/23/2018  Released US1. US2 and US3 well under-way. Updated s1 planning files to reflect discussion with TA about adding the integration/release of new features as a Task in each US.
 10/23/2018  Added s1 report and burndown chart (provisional and actual). s2 planning to follow.
 10/23/2018  Updated user story order in Product_Backlog based off TA suggestions. Added s2 planning.
+10/29/2018  Added s2 report and burndown chart (provisional and actual). s3 planning to follow. Bit behind due to multiple midterms for each member.
