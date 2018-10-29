@@ -11,3 +11,4 @@ Activity Log
 10/23/2018  Added s1 report and burndown chart (provisional and actual). s2 planning to follow.
 10/23/2018  Updated user story order in Product_Backlog based off TA suggestions. Added s2 planning.
 10/29/2018  Added s2 report and burndown chart (provisional and actual). s3 planning to follow. Bit behind due to multiple midterms for each member.
+10/29/2018  Created product_backlog folder and moved v1/v2 of product backlog from deliverable2 folder for easier access by Instructors.
