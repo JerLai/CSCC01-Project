@@ -8,15 +8,14 @@ public class Admin extends User implements AccountCreation{
 
 	public User createAccount (String username, String password, String firstName, String lastName, int iD, String accountType) {
 		User user = null;
-
 		// depending on requested accountType, creates appropriate User
-		if (accountType == "receptionist") {
+		if (accountType.equals("receptionist")) {
 			user = createReceptionist(username, password, firstName, lastName, iD);
-		} else if (accountType == "settlementWorker") {
+		} else if (accountType.equals("settlementWorker")) {
 			user = createSettlementWorker(username, password, firstName, lastName, iD);
-		} else if (accountType == "admin") {
+		} else if (accountType.equals("admin")) {
 			user = createAdmin(username, password, firstName, lastName, iD);
-		} else if (accountType == "serviceProvider") {
+		} else if (accountType.equals("serviceProvider")) {
 			user = createServiceProvider(username, password, firstName, lastName, iD);
 		}
 

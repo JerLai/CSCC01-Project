@@ -7,10 +7,14 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
+import main.java.com.icare.accounts.AccountCreation;
+import main.java.com.icare.accounts.Admin;
+import main.java.com.icare.accounts.User;
 import main.java.com.icare.passwords.passwords;
 
 public class databaseAPI{
@@ -30,11 +34,11 @@ public class databaseAPI{
 			preparedStatement.setString(4, accountType);
 			int id = 0;
 			if (preparedStatement.executeUpdate()>0){
-		        ResultSet uniqueKey = preparedStatement.getGeneratedKeys();
-		        if (uniqueKey.next()) {
-		        	id = uniqueKey.getInt(1);
-		        	accountPasswordHelper(connection, id, password);
-		        }
+				ResultSet uniqueKey = preparedStatement.getGeneratedKeys();
+				if (uniqueKey.next()) {
+					id = uniqueKey.getInt(1);
+					accountPasswordHelper(connection, id, password);
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -56,6 +60,37 @@ public class databaseAPI{
 		return false;
 	}
 
+	protected static boolean checkPassword(Connection connection, String username, String password) throws SQLException {
+		String sql = "SELECT password FROM Login WHERE Username = ?";
+		PreparedStatement preparedStatement = connection.prepareStatement(sql);
+		preparedStatement.setString(1, username);
+		ResultSet results = preparedStatement.executeQuery();
+		return results.getString("password").equals(passwords.passwordHash(password));
+
+	}
+	
+	public static ResultSet getDatum(Connection connection, String select, String from, String condition) throws SQLException{
+		String sql = "SELECT " + select + " FROM " + from +" WHERE " +condition;
+		PreparedStatement preparedStatement = connection.prepareStatement(sql);
+		ResultSet results = preparedStatement.executeQuery();
+		return results;
+	}
+
+	public static User login(Connection connection, String username, String password) throws SQLException{
+		AccountCreation AccountCreator = new Admin("","","","", 0);
+		User Account = null;
+		if (checkPassword(connection, username, password)){
+			ResultSet results = getDatum(connection, "ID, firstName, lastName, accountType", "Login",
+					"username = '" + username + "'");
+			int ID = Integer.parseInt(results.getString("ID"));
+			String firstName = results.getString("firstName");
+			String lastName = results.getString("lastName");
+			String accountType = results.getString("accountType");
+			Account = AccountCreator.createAccount(username, password, firstName, lastName, ID, accountType);
+		}
+		return Account;
+	}
+	
 	public static LinkedHashMap<String, ArrayList<String>> importData(String fileName) {
 		BufferedReader csvReader = null;
 		LinkedHashMap <String, ArrayList<String>> fileData = new LinkedHashMap <String, ArrayList<String>>();
