@@ -23,3 +23,6 @@ buildNumber.properties
 Thumbs.db
 .DS_Store
 /bin/
+iCare/.recommenders/*
+
+iCare/.metadata/*
