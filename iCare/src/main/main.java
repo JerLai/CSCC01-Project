@@ -3,6 +3,7 @@ package main;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.List;
 
 import main.java.com.icare.database.makeDatabase;
 import main.java.com.icare.accounts.User;
@@ -14,10 +15,16 @@ public class main {
 		if (!f.exists())
 			makeDatabase.initialize();
 		Connection connection = databaseConnector.testConnection();
-		databaseAPI.insertUser(connection, "Kyle", "password", "J", "H", "receptionist");
-		User u = databaseAPI.login(connection, "Kyle", "password");
-		System.out.println(u.ID);
+		//databaseAPI.insertUser(connection, "Kyle", "password", "J", "H", "receptionist");
 		//databaseAPI.insertData(connection, "Data", "Sample1, Sample2, Sample3", "'Ha','HaHA','AHAHAHa'");
+		//databaseAPI.updateData(connection, "Data", "Sample1 = 'NO!'", "ID = 1");
+		//databaseAPI.addColumn(connection, "Data", "TestColumn", "char(20)");
+		//not working
+		//databaseAPI.removeData(connection, "Data", "Sample1 = 'Ha'");
+		//databaseAPI.deleteTable(connection, "Data_TEMP");
+		//databaseAPI.deleteColumn(connection, "Data", "TestColumn");
+		//databaseAPI.deleteTable(connection, "DUP");
+		System.out.println("Finished");
 	}
 
 
