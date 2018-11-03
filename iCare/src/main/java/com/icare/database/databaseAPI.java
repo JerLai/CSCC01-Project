@@ -12,6 +12,8 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
+import javax.naming.spi.DirStateFactory.Result;
+
 import main.java.com.icare.accounts.AccountCreation;
 import main.java.com.icare.accounts.Admin;
 import main.java.com.icare.accounts.User;
@@ -22,8 +24,23 @@ public class databaseAPI{
 	private static final String DELIMITER = ",";
 	private static final String NEW_LINE_SEPARATOR = "\n";
 
-	public static boolean insertUser(Connection connection, String username, String password, String firstName, String lastName, String accountType) {
+	
+	public static boolean removeData(){
+		return false;
+	}
+	
+	public static boolean insertData(Connection connection, String destination, String attributes, String values) throws SQLException{
+		String sql = "INSERT INTO " + destination + "(" + attributes + ")" + " VALUES(" + values + ");";
+		PreparedStatement preparedStatement = connection.prepareStatement(sql);
+		return preparedStatement.execute();
+	}
 
+	public static boolean insertUser(Connection connection, String username, String password, String firstName, String lastName, String accountType) throws SQLException {
+		ResultSet results = getData(connection, "ID, firstName, lastName, accountType", "Login",
+				"username = '" + username + "'");
+		if (results.next()){
+			return false;
+		}
 		String sql = "INSERT INTO Login(username, firstName, lastName, accountType) VALUES(?,?,?,?);";
 		try {
 
@@ -69,7 +86,7 @@ public class databaseAPI{
 
 	}
 	
-	public static ResultSet getDatum(Connection connection, String select, String from, String condition) throws SQLException{
+	public static ResultSet getData(Connection connection, String select, String from, String condition) throws SQLException{
 		String sql = "SELECT " + select + " FROM " + from +" WHERE " +condition;
 		PreparedStatement preparedStatement = connection.prepareStatement(sql);
 		ResultSet results = preparedStatement.executeQuery();
@@ -80,7 +97,7 @@ public class databaseAPI{
 		AccountCreation AccountCreator = new Admin("","","","", 0);
 		User Account = null;
 		if (checkPassword(connection, username, password)){
-			ResultSet results = getDatum(connection, "ID, firstName, lastName, accountType", "Login",
+			ResultSet results = getData(connection, "ID, firstName, lastName, accountType", "Login",
 					"username = '" + username + "'");
 			int ID = Integer.parseInt(results.getString("ID"));
 			String firstName = results.getString("firstName");

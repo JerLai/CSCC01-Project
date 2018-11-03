@@ -14,9 +14,10 @@ public class main {
 		if (!f.exists())
 			makeDatabase.initialize();
 		Connection connection = databaseConnector.testConnection();
-		//databaseAPI.insertUser(connection, "John", "password", "J", "H", "receptionist");
-		User u = databaseAPI.login(connection, "John", "password");
+		databaseAPI.insertUser(connection, "Kyle", "password", "J", "H", "receptionist");
+		User u = databaseAPI.login(connection, "Kyle", "password");
 		System.out.println(u.ID);
+		//databaseAPI.insertData(connection, "Data", "Sample1, Sample2, Sample3", "'Ha','HaHA','AHAHAHa'");
 	}
 
 
