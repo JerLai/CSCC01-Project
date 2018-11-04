@@ -13,11 +13,8 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import javax.naming.spi.DirStateFactory.Result;
-
-import main.java.com.icare.accounts.AccountCreation;
-import main.java.com.icare.accounts.Admin;
 import main.java.com.icare.accounts.User;
+import main.java.com.icare.accounts.UserFactory;
 import main.java.com.icare.passwords.passwords;
 
 public class databaseAPI{
@@ -154,7 +151,7 @@ public class databaseAPI{
 	}
 
 	public static User login(Connection connection, String username, String password) throws SQLException{
-		AccountCreation AccountCreator = new Admin("","","","", 0);
+		UserFactory AccountCreator = new UserFactory();
 		User Account = null;
 		if (checkPassword(connection, username, password)){
 			ResultSet results = getData(connection, "ID, firstName, lastName, accountType", "Login",
@@ -163,7 +160,7 @@ public class databaseAPI{
 			String firstName = results.getString("firstName");
 			String lastName = results.getString("lastName");
 			String accountType = results.getString("accountType");
-			Account = AccountCreator.createAccount(username, password, firstName, lastName, ID, accountType);
+			Account = AccountCreator.getUser(username, firstName, lastName, ID, accountType);
 		}
 		return Account;
 	}
