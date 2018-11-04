@@ -1,10 +1,12 @@
-package icare.gui;
+package icare.gui.panels;
 
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractButton;
 import javax.swing.JButton;
-import javax.swing.JLabel;
+
+import icare.gui.Screen;
 
 public class FormPanel extends Screen{
 
@@ -12,10 +14,10 @@ public class FormPanel extends Screen{
 	
 	private static String SUBMIT = "submit";
 	private JButton submit;
-	private JLabel submitLabel;
 
 	public FormPanel(Dimension size) {
-		
+		this.setPreferredSize(new Dimension(size));
+		generateButtons();
 	}
 
 	public void generateButtons() {

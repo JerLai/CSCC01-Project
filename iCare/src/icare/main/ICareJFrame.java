@@ -8,9 +8,8 @@ import java.awt.event.ActionListener;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import icare.gui.AppMainJPanel;
-import icare.gui.LoginPanel;
 import icare.gui.Screen;
+import icare.gui.panels.LoginPanel;
 //TODO: CHANGE IMPLEMENTATION FROM USING SCREEN TO USING SWAPPABLE JPANELS
 /**
  * Represents Frame for our Data Management System. Includes methods to construct the visible program

@@ -1,17 +1,23 @@
-package icare.gui;
+package icare.gui.panels;
 
-import javax.swing.*;
-import javax.swing.AbstractButton;
-import javax.swing.JButton;
-
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.util.Arrays;
 
+import javax.swing.AbstractButton;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
 
-public class LogInScreen implements Screen{
+import icare.gui.Screen;
+
+public class LoginPanel extends Screen{
+
+
+	private static final long serialVersionUID = -3887000510193812095L;
 
 	private static String LOGIN = "login";
-	private AppMainJPanel parentPanel;
 	private JButton logIn;
 
 	private static final int userColLength = 10;
@@ -22,15 +28,13 @@ public class LogInScreen implements Screen{
 	private static final int passwordColLength = 10;
 	JLabel passLabel;
 	private JPasswordField passwordField;
+
 	private static char[] tempPass = { 't', 'e', 'm', 'p'};
 
-	//TODO: INCLUDE CODE THAT DRAWS FROM ACCOUNT INFO DATABASE TO IMPLEMENT LOG IN
-
-	public LogInScreen(AppMainJPanel parentPanel) {
-		this.parentPanel = parentPanel;
-
-		generateLoginInput();
+	public LoginPanel (Dimension size) {
+		this.setPreferredSize(new Dimension(size));
 		generateButtons();
+		generateLoginInput();
 	}
 
 	public void generateButtons() {
@@ -43,16 +47,11 @@ public class LogInScreen implements Screen{
 		logIn.setVerticalTextPosition(AbstractButton.CENTER);
 		logIn.setHorizontalTextPosition(AbstractButton.CENTER);
 
-		
-		// Have it recognize key input, enter to submit, 10 is the value for Enter Key
-		//logIn.setMnemonic(10);
 		logIn.setActionCommand(LOGIN);
 
 		// Listen for actions on this button
-		parentPanel.add(logIn);
-		logIn.addActionListener(parentPanel);
-		
-
+		logIn.addActionListener(this);
+		this.add(logIn);
 	}
 
 	/**
@@ -64,15 +63,15 @@ public class LogInScreen implements Screen{
 		userField = new JTextField(userColLength);
 		userLabel = new JLabel("Username: ");
 		userLabel.setLabelFor(userField);
-		parentPanel.add(userLabel);
-		parentPanel.add(userField);
+		this.add(userLabel);
+		this.add(userField);
 
 		// Password Field
 		passwordField = new JPasswordField(passwordColLength);
 		passLabel = new JLabel("Password: ");
 		passLabel.setLabelFor(passwordField);
-		parentPanel.add(passLabel);
-		parentPanel.add(passwordField);
+		this.add(passLabel);
+		this.add(passwordField);
 	}
 
 	/**
@@ -95,13 +94,7 @@ public class LogInScreen implements Screen{
 		return isCorrect;
 	}
 
-
-
-	/**
-	 * Responds to action for Login
-	 * @param event the event to respond to
-	 * TODO: Implement account type selection
-	 */
+	@Override
 	public void actionPerformed(ActionEvent event) {
 		String action = event.getActionCommand();
 		if (action.equals(LOGIN)) {
@@ -109,14 +102,12 @@ public class LogInScreen implements Screen{
 			String inputUser = userField.getText();
 			// Check if user and pass match account records
 			// TODO: RIGOROUS CHECK OF MATCHING CREDENTIALS, PROOF OF CONCEPT FOR NOW
-			// Idea: Pull username from database, see if matches, then check if password matches, ideally a HashMap?
+			// Idea: send the strings to database, returns maybe HashMap of <AccType, Data> or null if not valid
 			if (isPasswordCorrect(inputPass) && inputUser.equals(tempUser)) {
 				// TODO: Re-route to Account Screen rather than Form Screen in later implementations
-				this.parentPanel.switchToForm();
-				//removeLoginComponents();
+
 			}
 			Arrays.fill(inputPass, '0');
 		}
 	}
-
 }
