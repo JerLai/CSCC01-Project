@@ -1,38 +1,19 @@
 package icare.gui;
 
-import java.awt.Graphics;
-import java.awt.event.MouseEvent;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-public interface Screen {
+import javax.swing.JPanel;
 
-	/**
-	 * Updates this Screen for one frame
-	 * @param deltaTimeMilliseconds the time elapsed since the last frame
-	 */
-	public void update(int deltaTimeMilliseconds);
+public abstract class Screen extends JPanel implements ActionListener{
 
-	/**
-	 * Paints this screen on the given context
-	 * @param g the Graphics context
-	 */
-	public void paint(Graphics g);
+	private static final long serialVersionUID = -3166538406297696707L;
 
-	/**
-	 * Tells the screen to respond to a mouse click
-	 * @param event the object containing the click's information
-	 */
-	public void mouseClicked(MouseEvent event);
-
-	/**
-	 * Tells the screen to respond to mouse motion
-	 * @param event the object containing the motion information
-	 */
-	public void mouseMoved(MouseEvent event);
+	public abstract void generateButtons();
 
 	/**
 	 * Tells the screen to respond to an ActionEvent
 	 * @param event the specific ActionEvent
 	 */
-	public void actionPerformed(ActionEvent event);
+	public abstract void actionPerformed(ActionEvent event);
 }
