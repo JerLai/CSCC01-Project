@@ -8,6 +8,7 @@ import java.util.List;
 import main.java.com.icare.database.makeDatabase;
 import main.java.com.icare.accounts.User;
 import main.java.com.icare.database.databaseAPI;
+import main.java.com.icare.database.databaseSession;
 public class main {
 
 	public static void main(String[]args) throws SQLException{
@@ -24,6 +25,8 @@ public class main {
 		//databaseAPI.deleteTable(connection, "Data_TEMP");
 		//databaseAPI.deleteColumn(connection, "Data", "TestColumn");
 		//databaseAPI.deleteTable(connection, "DUP");
+		databaseSession.createTempTable(connection, "Data2", databaseSession.sourceQuery("Data", "sample1, sample3"));
+		databaseSession.queryData(connection, "Data2", "*");
 		System.out.println("Finished");
 	}
 

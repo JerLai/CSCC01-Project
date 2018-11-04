@@ -49,6 +49,8 @@ public class databaseAPI{
 	}
 
 	public static void createTable(Connection connection, String table, String columnData) throws SQLException{
+		if (!columnData.contains("PRIMARY KEY"))
+			columnData = "ID INTEGER PRIMARY KEY NOT NULL" + columnData;
 		String sql = "CREATE TABLE IF NOT EXISTS " + table + "(" + columnData + ");"; 
 		Statement Statement = connection.createStatement();
 		Statement.executeUpdate(sql);
