@@ -68,12 +68,10 @@ public class DatabaseIO {
 			String[] columnHeaders = headers2.split(DELIMITER, -1);
 
 			// add column headers
-			int m = 0;
 			for (String header : columnHeaders) {
 				tableColData += ", ";
 				tableColData += header;
 				tableColData += " char(255)";
-				m++;
 			}
 			try {
 				databaseAPI.createTable(connection, fileTable, tableColData);
