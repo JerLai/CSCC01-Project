@@ -6,9 +6,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 
 import icare.gui.Screen;
+import icare.gui.panels.FormPanel;
 import icare.gui.panels.LoginPanel;
 //TODO: CHANGE IMPLEMENTATION FROM USING SCREEN TO USING SWAPPABLE JPANELS
 /**
@@ -33,7 +33,7 @@ public class ICareJFrame extends JFrame implements ActionListener{
 
 		super ("Placeholder");
 
-		loginPanel = new LoginPanel(PANEL_SIZE);
+		loginPanel = new LoginPanel(this, PANEL_SIZE);
 		loginPanel.setOpaque(true);
 		currPanel = loginPanel;
 		this.setContentPane(currPanel);
@@ -42,14 +42,21 @@ public class ICareJFrame extends JFrame implements ActionListener{
 		this.pack();
 	}
 
+	public void switchToFormScreen() {
+		loginPanel.setVisible(false);
+		formPanel = new FormPanel(this, PANEL_SIZE);
+		this.currPanel = formPanel;
+		this.setContentPane(currPanel);
+		this.pack();
+	}
+
+	public void actionPerformed(ActionEvent event) {
+		this.currPanel.actionPerformed(event);
+	}
+
 	public static void main(String[] args)
 	{
 		ICareJFrame instance = new ICareJFrame();
 		instance.setVisible(true);
-	}
-
-	@Override
-	public void actionPerformed(ActionEvent event) {
-		this.currPanel.actionPerformed(event);
 	}
 }

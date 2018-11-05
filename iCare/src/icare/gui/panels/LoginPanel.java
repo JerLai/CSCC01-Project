@@ -11,10 +11,11 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
 import icare.gui.Screen;
+import icare.main.ICareJFrame;
 
 public class LoginPanel extends Screen{
 
-
+	private ICareJFrame parentFrame;
 	private static final long serialVersionUID = -3887000510193812095L;
 
 	private static String LOGIN = "login";
@@ -31,7 +32,8 @@ public class LoginPanel extends Screen{
 
 	private static char[] tempPass = { 't', 'e', 'm', 'p'};
 
-	public LoginPanel (Dimension size) {
+	public LoginPanel (ICareJFrame parentFrame, Dimension size) {
+		this.parentFrame = parentFrame;
 		this.setPreferredSize(new Dimension(size));
 		generateButtons();
 		generateLoginInput();
@@ -105,7 +107,7 @@ public class LoginPanel extends Screen{
 			// Idea: send the strings to database, returns maybe HashMap of <AccType, Data> or null if not valid
 			if (isPasswordCorrect(inputPass) && inputUser.equals(tempUser)) {
 				// TODO: Re-route to Account Screen rather than Form Screen in later implementations
-
+				this.parentFrame.switchToFormScreen();
 			}
 			Arrays.fill(inputPass, '0');
 		}

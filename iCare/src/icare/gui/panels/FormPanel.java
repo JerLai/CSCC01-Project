@@ -7,15 +7,17 @@ import javax.swing.AbstractButton;
 import javax.swing.JButton;
 
 import icare.gui.Screen;
+import icare.main.ICareJFrame;
 
 public class FormPanel extends Screen{
 
+	private ICareJFrame parentFrame;
 	private static final long serialVersionUID = -6182799282494130258L;
 	
 	private static String SUBMIT = "submit";
 	private JButton submit;
 
-	public FormPanel(Dimension size) {
+	public FormPanel(ICareJFrame parentFrame, Dimension size) {
 		this.setPreferredSize(new Dimension(size));
 		generateButtons();
 	}
