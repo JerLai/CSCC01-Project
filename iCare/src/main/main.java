@@ -26,15 +26,16 @@ public class main {
 		//databaseAPI.deleteTable(connection, "Data_TEMP");
 		//databaseAPI.deleteColumn(connection, "Data", "TestColumn");
 		//databaseAPI.deleteTable(connection, "DUP");
-		DatabaseIO.importData(connection, "csvTest.csv");
-		String querySource = databaseSession.sourceQuery("Data", "ID, sample1, sample3");
-		String queryTemporary = databaseSession.sourceQuery("Data2", "ID, sample1, sample3");
+		DatabaseIO.importData(connection, "csvTest2.csv");
+		DatabaseIO.exportData(connection, "csvTest2.csv");
+		//String querySource = databaseSession.sourceQuery("Data", "ID, sample1, sample3");
+		//String queryTemporary = databaseSession.sourceQuery("Data2", "ID, sample1, sample3");
 		//exec = databaseSession.filterQuery(exec, "ID = 2");
-		querySource = databaseSession.sortQuery(querySource, "ID DESC");
-		queryTemporary = databaseSession.sortQuery(queryTemporary, "ID DESC");
-		databaseSession.createTempTable(connection, "Data2", querySource);
-		System.out.println(String.format(databaseSession.queryData(connection, querySource)));
-		System.out.println(String.format(databaseSession.queryData(connection, queryTemporary)));
+		//querySource = databaseSession.sortQuery(querySource, "ID DESC");
+		//queryTemporary = databaseSession.sortQuery(queryTemporary, "ID DESC");
+		//databaseSession.createTempTable(connection, "Data2", querySource);
+		//System.out.println(String.format(databaseSession.queryData(connection, querySource)));
+		//System.out.println(String.format(databaseSession.queryData(connection, queryTemporary)));
 		System.out.println("Finished");
 	}
 
