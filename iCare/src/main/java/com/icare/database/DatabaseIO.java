@@ -35,24 +35,24 @@ public class DatabaseIO {
 			ArrayList<String> oldTableExistCols = new ArrayList<String>();
 			// delete .old table if exists and rename existing table to .old if needed
 			try {
-				oldTableExistCols = (ArrayList<String>) databaseAPI.getTableColumnData(connection, fileTable + ".old");
+				oldTableExistCols = (ArrayList<String>) databaseAPI.getTableColumnData(connection, fileTable + "_old");
 			} catch (Exception e) {
-				System.out.println("Error while checking if .old table exists for .csv file: " + fileName);
+				System.out.println("Error while checking if _old table exists for .csv file: " + fileName);
 				e.printStackTrace();
 			}
 			if (oldTableExistCols.size() > 0) {
 				try {
-					databaseAPI.deleteTable(connection, fileTable + ".old");
+					databaseAPI.deleteTable(connection, fileTable + "_old");
 				} catch (Exception e) {
-					System.out.println("Error while deleting .old table for .csv file: " + fileName);
+					System.out.println("Error while deleting _old table for .csv file: " + fileName);
 					e.printStackTrace();
 				}
 			}
 			if (tableExistCols.size() > 0) {
 				try {
-					databaseAPI.renameTable(connection, fileTable, fileTable + ".old");
+					databaseAPI.renameTable(connection, fileTable, fileTable + "_old");
 				} catch (Exception e) {
-					System.out.println("Error while saving .old table for .csv file: " + fileName);
+					System.out.println("Error while saving _old table for .csv file: " + fileName);
 					e.printStackTrace();
 				}
 			}
@@ -64,11 +64,11 @@ public class DatabaseIO {
 			// split the column headers
 			String[] columnHeaders = headers2.split(DELIMITER, -1);
 
-			// add column headers as keys to fileData hashmap
+			// add column headers
 			for (String header : columnHeaders) {
 				tableColData += ", ";
 				tableColData += header;
-				tableColData += "STRING";
+				tableColData += " char(255)";
 			}
 			try {
 				databaseAPI.createTable(connection, fileTable, tableColData);
