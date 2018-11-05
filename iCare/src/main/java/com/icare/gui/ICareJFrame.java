@@ -4,6 +4,7 @@ package main.java.com.icare.gui;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
 
 import javax.swing.JFrame;
 //TODO: CHANGE IMPLEMENTATION FROM USING SCREEN TO USING SWAPPABLE JPANELS
@@ -25,14 +26,15 @@ public class ICareJFrame extends JFrame implements ActionListener{
 	/**
 	 * Constructs the Application
 	 */
-	public ICareJFrame () {
+	public ICareJFrame (Connection connection) {
 
-		super ("Placeholder");
-
+		super ("iCare Data Management");
+		Screen.registerConnection(connection);
 		loginPanel = new LoginPanel(this, PANEL_SIZE);
 		loginPanel.setOpaque(true);
+		loginPanel.setLayout(null);
 		currPanel = loginPanel;
-		this.setContentPane(currPanel);
+		this.setContentPane(loginPanel);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 
 		this.pack();
@@ -42,7 +44,7 @@ public class ICareJFrame extends JFrame implements ActionListener{
 		loginPanel.setVisible(false);
 		formPanel = new FormPanel(this, PANEL_SIZE);
 		this.currPanel = formPanel;
-		this.setContentPane(currPanel);
+		this.setContentPane(formPanel);
 		this.pack();
 	}
 
@@ -50,9 +52,4 @@ public class ICareJFrame extends JFrame implements ActionListener{
 		this.currPanel.actionPerformed(event);
 	}
 
-	public static void main(String[] args)
-	{
-		ICareJFrame instance = new ICareJFrame();
-		instance.setVisible(true);
-	}
 }

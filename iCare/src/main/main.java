@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 import main.java.com.icare.database.makeDatabase;
+import main.java.com.icare.gui.ICareJFrame;
 import main.java.com.icare.accounts.User;
 import main.java.com.icare.database.databaseAPI;
 public class main {
@@ -17,6 +18,8 @@ public class main {
 		//databaseAPI.insertUser(connection, "John", "password", "J", "H", "receptionist");
 		User u = databaseAPI.login(connection, "John", "password");
 		System.out.println(u.ID);
+		ICareJFrame instance = new ICareJFrame(connection);
+		instance.setVisible(true);
 	}
 
 

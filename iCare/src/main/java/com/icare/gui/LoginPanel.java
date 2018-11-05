@@ -1,15 +1,28 @@
 package main.java.com.icare.gui;
 
 import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
-import java.util.Arrays;
+import java.sql.SQLException;
 
 import javax.swing.AbstractButton;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
+import main.java.com.icare.accounts.User;
+import main.java.com.icare.database.databaseAPI;
+
+/**
+ * LoginPanel class, creates the Login Page for the software
+ * Unused code snippets commented out for future implementation
+ * @author Jeremy Lai
+ *
+ */
 public class LoginPanel extends Screen{
 
 	private ICareJFrame parentFrame;
@@ -21,23 +34,67 @@ public class LoginPanel extends Screen{
 	private static final int userColLength = 10;
 	JLabel userLabel;
 	private JTextField userField;
-	private static String tempUser = "user";
 
 	private static final int passwordColLength = 10;
 	JLabel passLabel;
-	private JPasswordField passwordField;
+	private JPasswordField passField;
 
-	private static char[] tempPass = { 't', 'e', 'm', 'p'};
+	//private GridBagConstraints c = new GridBagConstraints();
 
 	public LoginPanel (ICareJFrame parentFrame, Dimension size) {
+		//TODO: Use LayoutManagers later to fix
+		//this.setLayout(new GridBagLayout());
+		this.setLayout(null);
 		this.parentFrame = parentFrame;
 		this.setPreferredSize(new Dimension(size));
-		generateButtons();
-		generateLoginInput();
+		generateComponents();
+		this.setVisible(true);
 	}
 
-	public void generateButtons() {
+	/**
+	 * Sets up the Password Field for input
+	 */
+	private void generateLoginInput() {
+		// Username Field
+		userField = new JTextField(userColLength);
+		userLabel = new JLabel("Username: ");
+		userLabel.setLabelFor(userField);
 
+		// Password Field
+		passField = new JPasswordField(passwordColLength);
+		passLabel = new JLabel("Password: ");
+		passLabel.setLabelFor(passField);
+
+		//c.gridx = 0;
+		//c.gridy = 0;
+		this.add(userLabel);
+		//c.gridx = 1;
+		this.add(userField);
+
+
+		//c.weightx = 0.1;
+		//c.gridx = 2;
+		this.add(passLabel);
+		//c.gridx = 4;
+		this.add(passField);
+
+		int startX = 400;
+		int startY = 400;
+
+		Dimension size = userLabel.getPreferredSize();
+		int offsetX = size.width;
+		userLabel.setBounds(startX, startY, size.width, size.height);
+		size = userField.getPreferredSize();
+		int offsetY = size.height + 10;
+		userField.setBounds(startX + offsetX, startY, size.width, size.height);
+		size = passLabel.getPreferredSize();
+		passLabel.setBounds(startX, startY + offsetY, size.width, size.height);
+		size = passField.getPreferredSize();
+		passField.setBounds(startX + offsetX, startY + offsetY, size.width, size.height);
+	}
+
+	public void generateComponents() {
+		generateLoginInput();
 		// Create button and make it so that box doesn't appear around text
 		logIn = new JButton("Log In");
 		logIn.setFocusable(false);
@@ -50,63 +107,35 @@ public class LoginPanel extends Screen{
 
 		// Listen for actions on this button
 		logIn.addActionListener(this);
+		//c.gridx = 1;
+		//c.gridy = 1;log
 		this.add(logIn);
-	}
-
-	/**
-	 * Sets up the Password Field for input
-	 */
-	private void generateLoginInput() {
-
-		// Username Field
-		userField = new JTextField(userColLength);
-		userLabel = new JLabel("Username: ");
-		userLabel.setLabelFor(userField);
-		this.add(userLabel);
-		this.add(userField);
-
-		// Password Field
-		passwordField = new JPasswordField(passwordColLength);
-		passLabel = new JLabel("Password: ");
-		passLabel.setLabelFor(passwordField);
-		this.add(passLabel);
-		this.add(passwordField);
-	}
-
-	/**
-	 * Checks to see if received password matches corresponding correct password
-	 * @param input the password given from user
-	 * @return if passwords match user records
-	 */
-	private static boolean isPasswordCorrect(char[] input) {
-		// TODO modify when actual account system works
-		boolean isCorrect = true;
-
-		if (input.length != tempPass.length) {
-			isCorrect = false;
-		}
-		else {
-			isCorrect = Arrays.equals(input, tempPass);
-		}
-		// TODO: better security
-		//Arrays.fill(tempPass, '0');
-		return isCorrect;
+		Dimension size = logIn.getPreferredSize();
+		logIn.setBounds(465, 460, size.width, size.height);
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent event) {
 		String action = event.getActionCommand();
 		if (action.equals(LOGIN)) {
-			char[] inputPass = passwordField.getPassword();
 			String inputUser = userField.getText();
+			@SuppressWarnings("deprecation")
+			String inputPass = passField.getText();
 			// Check if user and pass match account records
-			// TODO: RIGOROUS CHECK OF MATCHING CREDENTIALS, PROOF OF CONCEPT FOR NOW
-			// Idea: send the strings to database, returns maybe HashMap of <AccType, Data> or null if not valid
-			if (isPasswordCorrect(inputPass) && inputUser.equals(tempUser)) {
-				// TODO: Re-route to Account Screen rather than Form Screen in later implementations
-				this.parentFrame.switchToFormScreen();
+			User userCheck;
+			try {
+				userCheck = databaseAPI.login(connection, inputUser, inputPass);
+				if (!(userCheck).equals(null)) {
+					this.parentFrame.switchToFormScreen();
+				}
+				else {
+					JOptionPane.showMessageDialog(parentFrame, "Invalid Username and/or Password.", "Login Error", JOptionPane.ERROR_MESSAGE);
+				}
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				JOptionPane.showMessageDialog(parentFrame, "Invalid Username and/or Password.", "Login Error", JOptionPane.ERROR_MESSAGE);
 			}
-			Arrays.fill(inputPass, '0');
+
 		}
 	}
 }
