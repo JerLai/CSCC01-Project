@@ -7,6 +7,7 @@ import java.util.List;
 
 import main.java.com.icare.database.makeDatabase;
 import main.java.com.icare.accounts.User;
+import main.java.com.icare.database.DatabaseIO;
 import main.java.com.icare.database.databaseAPI;
 import main.java.com.icare.database.databaseSession;
 public class main {
@@ -25,6 +26,7 @@ public class main {
 		//databaseAPI.deleteTable(connection, "Data_TEMP");
 		//databaseAPI.deleteColumn(connection, "Data", "TestColumn");
 		//databaseAPI.deleteTable(connection, "DUP");
+		DatabaseIO.importData(connection, "csvTest.csv");
 		String querySource = databaseSession.sourceQuery("Data", "ID, sample1, sample3");
 		String queryTemporary = databaseSession.sourceQuery("Data2", "ID, sample1, sample3");
 		//exec = databaseSession.filterQuery(exec, "ID = 2");

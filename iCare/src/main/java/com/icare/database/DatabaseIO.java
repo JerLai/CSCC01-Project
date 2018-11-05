@@ -19,7 +19,7 @@ public class DatabaseIO {
 		try {
 			String headers = null;
 			String headers2 = null;
-			String line = null;
+			String values = null;
 			String tableColData = "ID INTEGER PRIMARY KEY NOT NULL";
 			csvReader = new BufferedReader(new FileReader("resources/" + fileName));
 
@@ -35,7 +35,7 @@ public class DatabaseIO {
 			ArrayList<String> oldTableExistCols = new ArrayList<String>();
 			// delete .old table if exists and rename existing table to .old if needed
 			try {
-				oldTableExistCols = (ArrayList<String>) databaseAPI.getTableColumnData(connection, fileTable + ".old");
+				oldTableExistCols = (ArrayList<String>) databaseAPI.getTableColumnData(connection, fileTable + "_old");
 			} catch (Exception e) {
 				System.out.println("Error while checking if .old table exists for .csv file: " + fileName);
 				e.printStackTrace();
@@ -50,7 +50,8 @@ public class DatabaseIO {
 			}
 			if (tableExistCols.size() > 0) {
 				try {
-					databaseAPI.renameTable(connection, fileTable, fileTable + ".old");
+					databaseAPI.deleteTable(connection, fileTable + "_old");
+					databaseAPI.renameTable(connection, fileTable, fileTable + "_old");
 				} catch (Exception e) {
 					System.out.println("Error while saving .old table for .csv file: " + fileName);
 					e.printStackTrace();
@@ -68,7 +69,7 @@ public class DatabaseIO {
 			for (String header : columnHeaders) {
 				tableColData += ", ";
 				tableColData += header;
-				tableColData += "STRING";
+				tableColData += " char(255)";
 			}
 			try {
 				databaseAPI.createTable(connection, fileTable, tableColData);
@@ -78,10 +79,16 @@ public class DatabaseIO {
 			}
 
 			// go through each line
-			while ((line = csvReader.readLine()) != null) {
+			while ((values = csvReader.readLine()) != null) {
 				// go through each line and add to table
 				try {
-					databaseAPI.insertData(connection, fileTable, headers, line);
+					String[] valuesArray = values.split(",");
+					values = "";
+					for (String entry: valuesArray){
+						values += ", '" + entry + "'";
+					}
+					values = values.substring(2);
+					databaseAPI.insertData(connection, fileTable, headers, values);
 				} catch (Exception e) {
 					System.out.println("Error while inserting data for .csv file: " + fileName);
 					e.printStackTrace();
