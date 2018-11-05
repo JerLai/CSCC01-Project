@@ -1,4 +1,9 @@
 <<<<<<< HEAD
+/.metadata/
+
+/.recommenders/
+=======
+<<<<<<< HEAD
 
 .metadata/.lock
 .metadata/.log
@@ -30,6 +35,7 @@ iCare/.classpath
 .metadata/
 
 .recommenders/
+>>>>>>> us3database
 target/
 pom.xml.tag
 pom.xml.releaseBackup
@@ -51,5 +57,12 @@ buildNumber.properties
 # OS Files
 Thumbs.db
 .DS_Store
+<<<<<<< HEAD
+/bin/
+iCare/.recommenders/*
+
+iCare/.metadata/*
+=======
 bin/
 >>>>>>> master
+>>>>>>> us3database
