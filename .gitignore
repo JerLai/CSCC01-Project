@@ -53,3 +53,6 @@ Thumbs.db
 .DS_Store
 bin/
 >>>>>>> master
+iCare/resources/iCare.csv
+iCare/resources/New_iCARE_Template_Comb_with_Examples.xlsx
+iCare/iCare.db
