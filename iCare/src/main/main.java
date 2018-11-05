@@ -25,8 +25,14 @@ public class main {
 		//databaseAPI.deleteTable(connection, "Data_TEMP");
 		//databaseAPI.deleteColumn(connection, "Data", "TestColumn");
 		//databaseAPI.deleteTable(connection, "DUP");
-		databaseSession.createTempTable(connection, "Data2", databaseSession.sourceQuery("Data", "sample1, sample3"));
-		databaseSession.queryData(connection, "Data2", "*");
+		String querySource = databaseSession.sourceQuery("Data", "ID, sample1, sample3");
+		String queryTemporary = databaseSession.sourceQuery("Data2", "ID, sample1, sample3");
+		//exec = databaseSession.filterQuery(exec, "ID = 2");
+		querySource = databaseSession.sortQuery(querySource, "ID DESC");
+		queryTemporary = databaseSession.sortQuery(queryTemporary, "ID DESC");
+		databaseSession.createTempTable(connection, "Data2", querySource);
+		System.out.println(String.format(databaseSession.queryData(connection, querySource)));
+		System.out.println(String.format(databaseSession.queryData(connection, queryTemporary)));
 		System.out.println("Finished");
 	}
 
