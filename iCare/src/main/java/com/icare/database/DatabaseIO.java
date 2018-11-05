@@ -87,6 +87,9 @@ public class DatabaseIO {
 					String[] valuesArray = values.split(",");
 					values = "";
 					for (String entry: valuesArray){
+						if (entry == "") {
+							entry = "NULL";
+						}
 						values += ", '" + entry + "'";
 					}
 					values = values.substring(2);
