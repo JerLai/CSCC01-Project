@@ -27,7 +27,7 @@ public class main {
 		//databaseAPI.deleteColumn(connection, "Data", "TestColumn");
 		//databaseAPI.deleteTable(connection, "DUP");
 		DatabaseIO.importData(connection, "csvTest2.csv");
-		DatabaseIO.exportData(connection, "csvTest2.csv");
+		DatabaseIO.exportData(connection, "csvTest3.csv", "csvTest2");
 		//String querySource = databaseSession.sourceQuery("Data", "ID, sample1, sample3");
 		//String queryTemporary = databaseSession.sourceQuery("Data2", "ID, sample1, sample3");
 		//exec = databaseSession.filterQuery(exec, "ID = 2");

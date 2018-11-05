@@ -16,6 +16,10 @@ public class DatabaseIO {
 
 	public static void importData(Connection connection, String fileName) {
 		String fileTable = fileName.substring(0, fileName.indexOf("."));
+		importData(connection, fileName, fileTable);
+	}
+
+	public static void importData(Connection connection, String fileName, String fileTable) {
 		BufferedReader csvReader = null;
 
 		try {
@@ -110,8 +114,12 @@ public class DatabaseIO {
 	}
 
 	public static void exportData(Connection connection, String fileName) {
-		FileWriter csvWriter = null;
 		String fileTable = fileName.substring(0, fileName.indexOf("."));
+		exportData(connection, fileName, fileTable);
+	}
+
+	public static void exportData(Connection connection, String fileName, String fileTable) {
+		FileWriter csvWriter = null;
 
 		try {
 			csvWriter = new FileWriter("resources/" + fileName);
