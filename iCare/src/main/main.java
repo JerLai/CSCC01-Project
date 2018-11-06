@@ -1,12 +1,8 @@
 package main;
 
-import java.awt.Dimension;
-import java.awt.Toolkit;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.List;
-
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
