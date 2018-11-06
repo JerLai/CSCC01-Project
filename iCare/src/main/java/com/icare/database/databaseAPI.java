@@ -110,6 +110,7 @@ public class databaseAPI{
 				e.printStackTrace();
 			}
 		}
+		results.close();
 	}
 
 	private static void accountPasswordHelper(Connection connection, int id, String password){
@@ -130,8 +131,14 @@ public class databaseAPI{
 		PreparedStatement preparedStatement = connection.prepareStatement(sql);
 		preparedStatement.setString(1, username);
 		ResultSet results = preparedStatement.executeQuery();
-		preparedStatement.close();
-		return results.getString("password").equals(passwords.passwordHash(password));
+		boolean match = false;
+		if (results.isClosed())
+			return false;
+		else {
+			match = results.getString("password").equals(passwords.passwordHash(password));
+		}
+		results.close();
+		return match;
 
 	}
 
@@ -139,7 +146,6 @@ public class databaseAPI{
 		String sql = "SELECT " + select + " FROM " + from +" WHERE " +condition;
 		PreparedStatement preparedStatement = connection.prepareStatement(sql);
 		ResultSet results = preparedStatement.executeQuery();
-		preparedStatement.close();
 		return results;
 	}
 
@@ -154,6 +160,7 @@ public class databaseAPI{
 			String lastName = results.getString("lastName");
 			String accountType = results.getString("accountType");
 			Account = AccountCreator.getUser(username, firstName, lastName, ID, accountType);
+			results.close();
 		}
 		return Account;
 	}
