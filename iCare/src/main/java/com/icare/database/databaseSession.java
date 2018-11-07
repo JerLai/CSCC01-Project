@@ -10,6 +10,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Vector;
 
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
@@ -59,7 +60,7 @@ public class databaseSession extends databaseAPI{
 		createTempTable(connection, "Scratch_Table", query);
 		return queryJTable(connection, "SELECT * FROM Scratch_Table;");
 	}
-	
+
 	public static TableModel queryJTable(Connection connection, String query) throws SQLException{
 		String sql = query;
 		PreparedStatement preparedStatement = connection.prepareStatement(sql);
@@ -118,8 +119,8 @@ public class databaseSession extends databaseAPI{
 
 	}
 
-	public static String findPrimaryKey(Connection connection, String query) throws SQLException{
-		String table = query.substring(query.indexOf("from")).split(" ")[1];
+	public static String findPrimaryKey(Connection connection, String table) throws SQLException{
+		//String table = query.substring(query.indexOf("from")).split(" ")[1];
 		String sql = "pragma table_info(" + table + ");";
 		PreparedStatement preparedStatement = connection.prepareStatement(sql);
 		ResultSet results = preparedStatement.executeQuery();
@@ -132,6 +133,14 @@ public class databaseSession extends databaseAPI{
 		}
 		results.close();
 		return primaryKey;
+	}
+
+	public static Boolean primaryKeyInTable(String pk, JTable table){
+		for (int c = 0 ; c < table.getColumnCount(); c++){
+			if (table.getColumnName(c).equals(pk))
+				return true;
+		}
+		return false;
 	}
 
 	public static ArrayList<String> getAllColumnNames(Connection connection, String table) throws SQLException{

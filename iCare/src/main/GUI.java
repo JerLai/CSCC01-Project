@@ -13,6 +13,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -47,6 +49,8 @@ public class GUI extends JFrame{
 	private ArrayList<JComponent> currentGUIElements = new ArrayList<JComponent>();
 	private GridBagConstraints gbc;
 	private Insets defaultInsets = new Insets(10,10,10,10);
+	private Dimension defaultSize;
+	private String currentTable;
 	private JLabel pad[] = {new JLabel(),new JLabel(),new JLabel(),new JLabel(),new JLabel(),
 			new JLabel(),new JLabel(),new JLabel(),new JLabel(),new JLabel(),
 			new JLabel(),new JLabel(),new JLabel(),new JLabel(),new JLabel(),
@@ -63,6 +67,7 @@ public class GUI extends JFrame{
 		container = this.getContentPane();
 		container.setLayout(new GridBagLayout());
 		gbc = new GridBagConstraints();
+		defaultSize = new Dimension(window.width*1/8, window.height*1/25);
 		gbc.insets = defaultInsets;
 		this.requestFocusInWindow();
 		Login();
@@ -75,8 +80,10 @@ public class GUI extends JFrame{
 		JTextField password = new JPasswordField("password");
 		JLabel login = new JLabel("Login");
 		login.setText("Login");
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		login.setPreferredSize(new Dimension(200,30));
+		login.setPreferredSize(defaultSize);
+		username.setPreferredSize(defaultSize);
+		password.setPreferredSize(defaultSize);
+		button.setPreferredSize(defaultSize);
 		addElement(login, 0, 1);
 		addElement(username, 0, 2);
 		addElement(password, 0, 3);
@@ -139,19 +146,15 @@ public class GUI extends JFrame{
 	public void mainMenu(User userSession) throws SQLException{
 		clearScreen();
 		JButton logout = new JButton("Logout");
-		logout.setPreferredSize(new Dimension(200,30));
 		JLabel welcome = new JLabel("Welcome " + userSession.getFirstName());
 		JButton viewTable = new JButton("View Tables");
 
-
+		welcome.setPreferredSize(defaultSize);
+		logout.setPreferredSize(defaultSize);
+		viewTable.setPreferredSize(defaultSize);
 		addElement(welcome,0,0);
 		addElement(logout, 0,1);
 		addElement(viewTable,0,2);
-		//		for (int i = 0; i<=3; i++){
-		//			addElement(pad[i], 1,i);
-		//			pad[i].setPreferredSize(new Dimension(500,50));
-		//		}
-		//		pad[3].setPreferredSize(new Dimension(1000,500));
 		addElement(pad[0], 1,3);
 		pad[0].setPreferredSize(new Dimension(1000,500));
 		repaint();
@@ -177,7 +180,6 @@ public class GUI extends JFrame{
 		});
 	}
 
-
 	public void accessData(User userSession) throws SQLException{
 		clearScreen();
 		addMainMenuButton(userSession);
@@ -186,61 +188,123 @@ public class GUI extends JFrame{
 		JTextField queryInput = new JTextField("Select * from Data");
 		JButton submitQuery = new JButton("Query");
 		JButton saveChanges = new JButton("Save");
+		JComboBox<String> listTables = new JComboBox<String>();
+		for (String s: databaseSession.getAllTables(connection)){
+			listTables.addItem(s);
+		}
+		listTables.addItemListener(new ItemListener(){
+
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				queryInput.setText("Select * from " + listTables.getSelectedItem());
+			}
+			
+		});
+		saveChanges.setEnabled(false);
 		JScrollPane tableScroll = new JScrollPane(data);
 		tableScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 		tableScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 		JTableHeader header = data.getTableHeader();
-		tableScroll.setPreferredSize(new Dimension(500,500));
 
 
-		addElement(header,0,0);
-		addElement(saveChanges,0,1);
-		addElement(queryInput,0,2);
-		addElement(submitQuery,0,3);
-		addElement(tableScroll,0,4);
+		saveChanges.setPreferredSize(defaultSize);
+		listTables.setPreferredSize(defaultSize);
+		queryInput.setPreferredSize(new Dimension(defaultSize.width*3, defaultSize.height));
+		submitQuery.setPreferredSize(defaultSize);
+		tableScroll.setPreferredSize(new Dimension(defaultSize.width*3, window.height/2));
+		//addElement(header,4,0);
+		gbc.gridwidth = 3;
+		addElement(queryInput,2,2);
+		gbc.gridwidth = 1;
+		addElement(listTables, 1,3);
+		addElement(submitQuery,2,3);
+		addElement(saveChanges,4,3);
+		gbc.gridwidth = 3;
+		addElement(tableScroll,2,4);
+		gbc.gridwidth = 1;
 		submitQuery.addActionListener(new ActionListener(){
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
 					String query = queryInput.getText();
-					data.setModel(databaseSession.queryTempJTable(connection, query));
+					if (data.isEditing())
+						data.getCellEditor().stopCellEditing();
+					data.setModel(databaseSession.queryJTable(connection, query));
+					currentTable = query.substring(query.indexOf("from")).split(" ")[1];
+					String pk = databaseSession.findPrimaryKey(connection, currentTable);
+					if (databaseSession.primaryKeyInTable(pk, data)){
+						saveChanges.setEnabled(true);
+						saveChanges.setText("Save to: " + currentTable);
+					} else {
+						saveChanges.setEnabled(false);
+						saveChanges.setText("Cannot Save without Primary Key");
+					}
+
 				} catch (NullPointerException npe){
-					npe.printStackTrace();
+					//npe.printStackTrace();
 				}
 				catch (SQLException e1) {
-					e1.printStackTrace();
+					//e1.printStackTrace();
 				}
 			}
 		});
 
 		data.getSelectionModel().addListSelectionListener(new ListSelectionListener(){
-			int c = -1;
-			int r = -1;
+			int r =-1;
+			String values;
 			@Override
 			public void valueChanged(ListSelectionEvent e) {
-				r = e.getFirstIndex();
-				if (data.isEditing())
-					data.getCellEditor().stopCellEditing();
-				if (c>-1 && r>-1){
-					System.out.println(data.getValueAt(r, c));
+				if (r != data.getSelectedRow()){
+					r = data.getSelectedRow();
+					if (data.isEditing())
+						data.getCellEditor().stopCellEditing();
+					if (r>-1){
+						values = "";
+						for (int c = 0; c<data.getColumnCount();c++){
+							if (data.getValueAt(r, c) == null)
+								values += ",NULL";
+							else
+								values += ","+ data.getValueAt(r, c);
+						}
+						//System.out.println(values.substring(1));
+					}
 				}
-				c = data.getSelectedColumn();
-				r = e.getFirstIndex();
 			}
 
 		});
 		saveChanges.addActionListener(new ActionListener(){
+			String updatedValues;
+			String condition;
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-
-				//databaseSession.updateData(connection, "Scratch_Table", "data.getColumnName(c)='" + data.getValueAt(r, c) + "'", condition);
+				if (data.isEditing())
+					data.getCellEditor().stopCellEditing();
+				for(int r = 0; r < data.getRowCount(); r++){
+					updatedValues = "";
+					for (int c = 1; c < data.getColumnCount(); c++){
+						if (data.getValueAt(r, c) != null)
+							updatedValues += ", " + data.getColumnName(c) + "= '" + data.getValueAt(r, c) + "'";
+						else
+							updatedValues += ", " + data.getColumnName(c) + "= null";
+					}
+					updatedValues = updatedValues.substring(1);
+					try {
+						condition = databaseSession.findPrimaryKey(connection, currentTable) + "=" + data.getValueAt(r, 0);
+					} catch (SQLException e2) {
+						e2.printStackTrace();
+					}
+					try {
+						databaseSession.updateData(connection, currentTable, updatedValues, condition);
+					} catch (SQLException e1) {
+						e1.printStackTrace();
+					}
+				}
 			}
 
 		});
 	}
-
 
 	private void addElement(JComponent element, int x, int y){
 		gbc.gridwidth = 2;
@@ -255,12 +319,9 @@ public class GUI extends JFrame{
 	private void addMainMenuButton(User userSession){
 		JButton mainMenu = new JButton("Return to Menu");
 		mainMenu.setText("Main Menu");
-		mainMenu.setSize(200,30);
-		mainMenu.setBounds(50, window.height/20, mainMenu.getWidth(), mainMenu.getHeight());
+		mainMenu.setPreferredSize(defaultSize);
 		mainMenu.setVisible(true);
-		currentGUIElements.add(mainMenu);
-		container.add(mainMenu);
-		repaint();
+		addElement(mainMenu, 0,0);
 		mainMenu.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
