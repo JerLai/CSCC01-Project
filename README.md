@@ -14,3 +14,4 @@ Activity Log
 10/29/2018  Created product_backlog folder and moved v1/v2 of product backlog from deliverable2 folder for easier access by Instructors.
 10/30/2018  Added s3 planning docs. Focusing on completing and releasing us2/us3 by end of s3. Midterms, projects, etc slowing progress.
 11/05/2018  Released us2. Us3 almost complete. Added s3 report and burndown charts.
+11/07/2018  Completed planning for sprint4.
