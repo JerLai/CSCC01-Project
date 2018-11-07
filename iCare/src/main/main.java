@@ -28,7 +28,7 @@ public class main {
 		if (!f.exists())
 			makeDatabase.initialize();
 		Connection connection = databaseConnector.testConnection();
-		
+
 		SwingUtilities.invokeLater(new Runnable(){
 			public void run(){
 				JFrame frame = new GUI("iCare", connection);
