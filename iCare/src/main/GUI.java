@@ -31,6 +31,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
+import javax.swing.table.AbstractTableModel;
 import javax.swing.table.JTableHeader;
 import main.java.com.icare.accounts.User;
 import main.java.com.icare.database.databaseAPI;
@@ -67,7 +68,7 @@ public class GUI extends JFrame{
 		container = this.getContentPane();
 		container.setLayout(new GridBagLayout());
 		gbc = new GridBagConstraints();
-		defaultSize = new Dimension(window.width*1/8, window.height*1/25);
+		defaultSize = new Dimension(window.width*1/6, window.height*1/25);
 		gbc.insets = defaultInsets;
 		this.requestFocusInWindow();
 		Login();
@@ -148,14 +149,17 @@ public class GUI extends JFrame{
 		JButton logout = new JButton("Logout");
 		JLabel welcome = new JLabel("Welcome " + userSession.getFirstName());
 		JButton viewTable = new JButton("View Tables");
+		JButton addPatient = new JButton("Add Patient");
 
+		addPatient.setPreferredSize(defaultSize);
 		welcome.setPreferredSize(defaultSize);
 		logout.setPreferredSize(defaultSize);
 		viewTable.setPreferredSize(defaultSize);
 		addElement(welcome,0,0);
 		addElement(logout, 0,1);
 		addElement(viewTable,0,2);
-		addElement(pad[0], 1,3);
+		addElement(addPatient,0,3);
+		addElement(pad[0], 1,20);
 		pad[0].setPreferredSize(new Dimension(1000,500));
 		repaint();
 		logout.addActionListener(new ActionListener(){
@@ -178,12 +182,44 @@ public class GUI extends JFrame{
 			}
 
 		});
+		addPatient.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				addPatientData(userSession);
+			}
+
+		});
 	}
 
-	public void accessData(User userSession) throws SQLException{
+	private void addPatientData(User userSession){
 		clearScreen();
 		addMainMenuButton(userSession);
-		JTable data = new JTable();
+
+	}
+
+	public class MyTableModel extends JTable {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+		private int pkColumn= -1;
+
+		public void setColumnAsPK(int column){
+			pkColumn = column;
+		}
+
+		@Override
+		public boolean isCellEditable(int row, int column){
+			return (column != pkColumn);
+		}
+
+	}
+
+	private void accessData(User userSession) throws SQLException{
+		clearScreen();
+		addMainMenuButton(userSession);
+		MyTableModel data = new MyTableModel();
 		data.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		JTextField queryInput = new JTextField("Select * from Data");
 		JButton submitQuery = new JButton("Query");
@@ -198,13 +234,12 @@ public class GUI extends JFrame{
 			public void itemStateChanged(ItemEvent e) {
 				queryInput.setText("Select * from " + listTables.getSelectedItem());
 			}
-			
+
 		});
 		saveChanges.setEnabled(false);
 		JScrollPane tableScroll = new JScrollPane(data);
 		tableScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 		tableScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-		JTableHeader header = data.getTableHeader();
 
 
 		saveChanges.setPreferredSize(defaultSize);
@@ -212,7 +247,6 @@ public class GUI extends JFrame{
 		queryInput.setPreferredSize(new Dimension(defaultSize.width*3, defaultSize.height));
 		submitQuery.setPreferredSize(defaultSize);
 		tableScroll.setPreferredSize(new Dimension(defaultSize.width*3, window.height/2));
-		//addElement(header,4,0);
 		gbc.gridwidth = 3;
 		addElement(queryInput,2,2);
 		gbc.gridwidth = 1;
@@ -255,6 +289,13 @@ public class GUI extends JFrame{
 			String values;
 			@Override
 			public void valueChanged(ListSelectionEvent e) {
+				try {
+					if (data.getColumnName(data.getSelectedColumn()).equals(databaseSession.findPrimaryKey(connection, currentTable)))
+						data.setColumnAsPK(data.getSelectedColumn());
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 				if (r != data.getSelectedRow()){
 					r = data.getSelectedRow();
 					if (data.isEditing())
@@ -267,7 +308,7 @@ public class GUI extends JFrame{
 							else
 								values += ","+ data.getValueAt(r, c);
 						}
-						//System.out.println(values.substring(1));
+						System.out.println(values.substring(1));
 					}
 				}
 			}
