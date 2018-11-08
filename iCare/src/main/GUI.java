@@ -52,6 +52,8 @@ public class GUI extends JFrame{
 	private Insets defaultInsets = new Insets(10,10,10,10);
 	private Dimension defaultSize;
 	private String currentTable;
+	private String currentQuery;
+	private int currentRow;
 	private JLabel pad[] = {new JLabel(),new JLabel(),new JLabel(),new JLabel(),new JLabel(),
 			new JLabel(),new JLabel(),new JLabel(),new JLabel(),new JLabel(),
 			new JLabel(),new JLabel(),new JLabel(),new JLabel(),new JLabel(),
@@ -192,27 +194,17 @@ public class GUI extends JFrame{
 		});
 	}
 
+	private void removePatientData(User userSession){
+		clearScreen();
+		addMainMenuButton(userSession);
+
+		//databaseSession.removeData(connection, table, condition);
+	}
+
 	private void addPatientData(User userSession){
 		clearScreen();
 		addMainMenuButton(userSession);
 
-	}
-
-	public class MyTableModel extends JTable {
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = 1L;
-		private int pkColumn= -1;
-
-		public void setColumnAsPK(int column){
-			pkColumn = column;
-		}
-
-		@Override
-		public boolean isCellEditable(int row, int column){
-			return (column != pkColumn);
-		}
 
 	}
 
@@ -224,9 +216,11 @@ public class GUI extends JFrame{
 		JTextField queryInput = new JTextField("Select * from Data");
 		JButton submitQuery = new JButton("Query");
 		JButton saveChanges = new JButton("Save");
+		JButton removeRow = new JButton("Delete Entry");
 		JComboBox<String> listTables = new JComboBox<String>();
 		for (String s: databaseSession.getAllTables(connection)){
-			listTables.addItem(s);
+			if (!s.equals("Login"))
+				listTables.addItem(s);
 		}
 		listTables.addItemListener(new ItemListener(){
 
@@ -243,6 +237,7 @@ public class GUI extends JFrame{
 
 
 		saveChanges.setPreferredSize(defaultSize);
+		removeRow.setPreferredSize(defaultSize);
 		listTables.setPreferredSize(defaultSize);
 		queryInput.setPreferredSize(new Dimension(defaultSize.width*3, defaultSize.height));
 		submitQuery.setPreferredSize(defaultSize);
@@ -256,6 +251,34 @@ public class GUI extends JFrame{
 		gbc.gridwidth = 3;
 		addElement(tableScroll,2,4);
 		gbc.gridwidth = 1;
+		addElement(removeRow,2,5);
+		removeRow.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				currentRow = data.getSelectedRow();
+				try {
+					if (data.isEditing())
+						data.getCellEditor().stopCellEditing();
+					String pk;
+					pk = databaseSession.findPrimaryKey(connection, currentTable);
+					int pkColumn = -1;
+					for (int i = 0; i < data.getColumnCount();i++){
+						if (data.getColumnName(i).equals(pk))
+							pkColumn = i;
+					}
+					if (currentRow >= 0 && pkColumn > -1){
+						databaseSession.removeData(connection, currentTable, pk + "=" + data.getValueAt(currentRow, pkColumn));
+						data.setModel(databaseSession.queryJTable(connection, currentQuery));
+					}
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}				
+			}
+
+		});
+
 		submitQuery.addActionListener(new ActionListener(){
 
 			@Override
@@ -264,6 +287,9 @@ public class GUI extends JFrame{
 					String query = queryInput.getText();
 					if (data.isEditing())
 						data.getCellEditor().stopCellEditing();
+					if (query.substring(query.indexOf("from")).split(" ")[1].equals("Login")){
+						return;
+					}
 					data.setModel(databaseSession.queryJTable(connection, query));
 					currentTable = query.substring(query.indexOf("from")).split(" ")[1];
 					String pk = databaseSession.findPrimaryKey(connection, currentTable);
@@ -274,7 +300,7 @@ public class GUI extends JFrame{
 						saveChanges.setEnabled(false);
 						saveChanges.setText("Cannot Save without Primary Key");
 					}
-
+					currentQuery = query;
 				} catch (NullPointerException npe){
 					//npe.printStackTrace();
 				}
@@ -385,6 +411,24 @@ public class GUI extends JFrame{
 		}
 		currentGUIElements.clear();
 		repaint();
+	}
+
+	private class MyTableModel extends JTable {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+		private int pkColumn= -1;
+
+		public void setColumnAsPK(int column){
+			pkColumn = column;
+		}
+
+		@Override
+		public boolean isCellEditable(int row, int column){
+			return (column != pkColumn);
+		}
+
 	}
 
 }
