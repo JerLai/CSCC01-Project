@@ -357,7 +357,7 @@ public class GUI extends JFrame{
 					addRow.setEnabled(true);
 					if (databaseSession.primaryKeyInTable(pk, data)){
 						saveChanges.setEnabled(true);
-						saveChanges.setText("Save to: " + currentTable);
+						saveChanges.setText("Save rows to: " + currentTable);
 					} else {
 						saveChanges.setEnabled(false);
 						saveChanges.setText("Cannot Save without Primary Key");
@@ -424,7 +424,7 @@ public class GUI extends JFrame{
 			public void actionPerformed(ActionEvent e) {
 				if (data.isEditing())
 					data.getCellEditor().stopCellEditing();
-				for(int r = 0; r < data.getRowCount(); r++){
+				for(int r: data.getSelectedRows()){
 					updatedValues = "";
 					for (int c = 1; c < data.getColumnCount(); c++){
 						if (data.getValueAt(r, c) != null)
