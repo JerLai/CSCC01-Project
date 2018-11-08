@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPasswordField;
@@ -34,6 +35,7 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.JTableHeader;
 import main.java.com.icare.accounts.User;
+import main.java.com.icare.database.DatabaseIO;
 import main.java.com.icare.database.databaseAPI;
 import main.java.com.icare.database.databaseSession;
 
@@ -151,18 +153,21 @@ public class GUI extends JFrame{
 		JButton logout = new JButton("Logout");
 		JLabel welcome = new JLabel("Welcome " + userSession.getFirstName());
 		JButton viewTable = new JButton("View Tables");
+		JButton admin = new JButton("Admin");
 		JButton addPatient = new JButton("Add Patient");
 
-		addPatient.setPreferredSize(defaultSize);
+
+
 		welcome.setPreferredSize(defaultSize);
 		logout.setPreferredSize(defaultSize);
 		viewTable.setPreferredSize(defaultSize);
+		admin.setPreferredSize(defaultSize);
+		addPatient.setPreferredSize(defaultSize);
 		addElement(welcome,0,0);
 		addElement(logout, 0,1);
 		addElement(viewTable,0,2);
-		addElement(addPatient,0,3);
-		addElement(pad[0], 1,20);
-		pad[0].setPreferredSize(new Dimension(1000,500));
+		addElement(admin,0,3);
+		addElement(addPatient,0,4);
 		repaint();
 		logout.addActionListener(new ActionListener(){
 			@Override
@@ -192,14 +197,21 @@ public class GUI extends JFrame{
 			}
 
 		});
+		admin.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				admin(userSession);
+			}
+
+		});
 	}
 
-	private void removePatientData(User userSession){
+	private void admin(User userSession){
 		clearScreen();
 		addMainMenuButton(userSession);
-
-		//databaseSession.removeData(connection, table, condition);
 	}
+
 
 	private void addPatientData(User userSession){
 		clearScreen();
@@ -215,8 +227,15 @@ public class GUI extends JFrame{
 		data.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		JTextField queryInput = new JTextField("Select * from Data");
 		JButton submitQuery = new JButton("Query");
-		JButton saveChanges = new JButton("Save");
-		JButton removeRow = new JButton("Delete Entry");
+		JButton saveChanges = new JButton("Save Edits");
+		JButton removeRow = new JButton("Delete Entry (Permanent)");
+		JButton addRow = new JButton("Add Blank Entry");
+		JButton importCsv = new JButton("Import");
+		JButton exportCsv = new JButton("Export");
+		JFileChooser chooser = new JFileChooser("Search csv");
+
+		addRow.setEnabled(false);
+		removeRow.setEnabled(false);
 		JComboBox<String> listTables = new JComboBox<String>();
 		for (String s: databaseSession.getAllTables(connection)){
 			if (!s.equals("Login"))
@@ -239,19 +258,44 @@ public class GUI extends JFrame{
 		saveChanges.setPreferredSize(defaultSize);
 		removeRow.setPreferredSize(defaultSize);
 		listTables.setPreferredSize(defaultSize);
+		importCsv.setPreferredSize(defaultSize);
+		exportCsv.setPreferredSize(defaultSize);
 		queryInput.setPreferredSize(new Dimension(defaultSize.width*3, defaultSize.height));
 		submitQuery.setPreferredSize(defaultSize);
 		tableScroll.setPreferredSize(new Dimension(defaultSize.width*3, window.height/2));
+		addRow.setPreferredSize(defaultSize);
 		gbc.gridwidth = 3;
 		addElement(queryInput,2,2);
 		gbc.gridwidth = 1;
 		addElement(listTables, 1,3);
+		addElement(importCsv,1,4);
+		addElement(exportCsv,1,5);
 		addElement(submitQuery,2,3);
 		addElement(saveChanges,4,3);
 		gbc.gridwidth = 3;
-		addElement(tableScroll,2,4);
+		addElement(tableScroll,2,6);
 		gbc.gridwidth = 1;
-		addElement(removeRow,2,5);
+		addElement(removeRow,2,7);
+		addElement(addRow,2,4);
+		exportCsv.setEnabled(false);
+		importCsv.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				chooser.showOpenDialog(container);
+				chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+				String path = chooser.getSelectedFile().getName();
+				if (!path.isEmpty())
+					DatabaseIO.importData(connection, chooser.getSelectedFile().getName());
+				try {
+					accessData(userSession);
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+
+		});
 		removeRow.addActionListener(new ActionListener(){
 
 			@Override
@@ -268,7 +312,9 @@ public class GUI extends JFrame{
 							pkColumn = i;
 					}
 					if (currentRow >= 0 && pkColumn > -1){
-						databaseSession.removeData(connection, currentTable, pk + "=" + data.getValueAt(currentRow, pkColumn));
+						for (int row:data.getSelectedRows()){
+							databaseSession.removeData(connection, currentTable, pk + "=" + data.getValueAt(row, pkColumn));
+						}
 						data.setModel(databaseSession.queryJTable(connection, currentQuery));
 					}
 				} catch (SQLException e1) {
@@ -278,11 +324,26 @@ public class GUI extends JFrame{
 			}
 
 		});
+		addRow.addActionListener(new ActionListener(){
 
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					databaseSession.insertData(connection, currentTable);
+					data.setModel(databaseSession.queryJTable(connection, currentQuery));
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+
+			}
+
+		});
 		submitQuery.addActionListener(new ActionListener(){
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				addRow.setEnabled(false);
 				try {
 					String query = queryInput.getText();
 					if (data.isEditing())
@@ -290,9 +351,10 @@ public class GUI extends JFrame{
 					if (query.substring(query.indexOf("from")).split(" ")[1].equals("Login")){
 						return;
 					}
-					data.setModel(databaseSession.queryJTable(connection, query));
+					updateTable(data, query);
 					currentTable = query.substring(query.indexOf("from")).split(" ")[1];
 					String pk = databaseSession.findPrimaryKey(connection, currentTable);
+					addRow.setEnabled(true);
 					if (databaseSession.primaryKeyInTable(pk, data)){
 						saveChanges.setEnabled(true);
 						saveChanges.setText("Save to: " + currentTable);
@@ -309,7 +371,20 @@ public class GUI extends JFrame{
 				}
 			}
 		});
+		data.addFocusListener(new FocusListener(){
 
+			@Override
+			public void focusGained(FocusEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void focusLost(FocusEvent e) {
+				//removeRow.setEnabled(false);
+			}
+
+		});
 		data.getSelectionModel().addListSelectionListener(new ListSelectionListener(){
 			int r =-1;
 			String values;
@@ -334,6 +409,7 @@ public class GUI extends JFrame{
 							else
 								values += ","+ data.getValueAt(r, c);
 						}
+						removeRow.setEnabled(true);
 						System.out.println(values.substring(1));
 					}
 				}
@@ -371,6 +447,16 @@ public class GUI extends JFrame{
 			}
 
 		});
+	}
+	private void updateTable(JTable table, String query) throws SQLException{
+		table.setModel(databaseSession.queryJTable(connection, query));
+		for (int r = 0; r < table.getRowCount(); r++){
+			for (int c = 0; c < table.getColumnCount(); c++){
+				if (table.getValueAt(r, c) == null){
+
+				}
+			}
+		}
 	}
 
 	private void addElement(JComponent element, int x, int y){

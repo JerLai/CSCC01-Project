@@ -78,6 +78,13 @@ public class databaseAPI{
 		preparedStatement.close();
 	}
 
+	public static void insertData(Connection connection, String destination) throws SQLException{
+		String sql = "INSERT INTO " + destination + " DEFAULT VALUES;";
+		PreparedStatement preparedStatement = connection.prepareStatement(sql);
+		preparedStatement.execute();
+		preparedStatement.close();
+	}
+	
 	public static void insertData(Connection connection, String destination, String attributes, String values) throws SQLException{
 		String sql = "INSERT INTO " + destination + "(" + attributes + ")" + " VALUES(" + values + ");";
 		PreparedStatement preparedStatement = connection.prepareStatement(sql);
