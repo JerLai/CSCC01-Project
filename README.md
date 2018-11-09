@@ -15,3 +15,5 @@ Activity Log
 10/30/2018  Added s3 planning docs. Focusing on completing and releasing us2/us3 by end of s3. Midterms, projects, etc slowing progress.
 11/05/2018  Released us2. Us3 almost complete. Added s3 report and burndown charts.
 11/07/2018  Completed planning for sprint4.
+11/08/2018  Code Review documented and pushed in deliverable4 folder. Video too large, working on solution.
+11/08/2018  Re-ordered US in Product Backlog as per discussion with Client (reasons detailed in Product_Backlog_3 in product_backlog folder). Planning for S4 adjusted accordingly.
