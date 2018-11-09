@@ -165,7 +165,12 @@ public class accessData extends JPanel{
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				save(data);
+				try {
+					save(data);
+				} catch (SQLException e2) {
+					// TODO Auto-generated catch block
+					e2.printStackTrace();
+				}
 				currentRow = data.getSelectedRow();
 				try {
 					if (data.isEditing())
@@ -272,7 +277,12 @@ public class accessData extends JPanel{
 		saveChanges.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				save(data);
+				try {
+					save(data);
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 
 		});
@@ -287,16 +297,21 @@ public class accessData extends JPanel{
 
 
 
-	private void save(JTable table) {
+	private void save(JTable table) throws SQLException {
 		String updatedValues;
 		String condition;
+		String currentColumnType;
 		if (table.isEditing())
 			table.getCellEditor().stopCellEditing();
 		for(int r: editedRows){
 			updatedValues = "";
 			for (int c = 1; c < table.getColumnCount(); c++){
+				currentColumnType = databaseSession.getTableColumnType(connection, currentTable, table.getColumnName(c));
 				if (table.getValueAt(r, c) != null)
-					updatedValues += ", " + table.getColumnName(c) + "= '" + table.getValueAt(r, c) + "'";
+					if (currentColumnType.indexOf("char")>=0 || currentColumnType.indexOf("TEXT")>=0)
+						updatedValues += ", " + table.getColumnName(c) + "= '" + table.getValueAt(r, c) + "'";
+					else
+						updatedValues += ", " + table.getColumnName(c) + "=" + table.getValueAt(r, c);
 				else
 					updatedValues += ", " + table.getColumnName(c) + "= null";
 			}
@@ -310,7 +325,7 @@ public class accessData extends JPanel{
 
 		}
 	}
-	
+
 	private void updateTable(JTable table, String query) throws SQLException{
 		editedRows.clear();
 		setCurrentQueryActive(false);
