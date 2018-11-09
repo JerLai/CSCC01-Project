@@ -10,6 +10,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 import main.java.com.icare.database.makeDatabase;
+import main.java.com.icare.gui.GUI;
 import main.java.com.icare.accounts.User;
 import main.java.com.icare.database.DatabaseIO;
 import main.java.com.icare.database.databaseAPI;
