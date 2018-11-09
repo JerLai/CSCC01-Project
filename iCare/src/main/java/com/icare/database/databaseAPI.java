@@ -172,6 +172,21 @@ public class databaseAPI{
 		return Account;
 	}
 
+	public static String getTableColumnType(Connection connection, String table, String columnName) throws SQLException{
+		String sql = "pragma table_info(" + table + ");";
+		PreparedStatement preparedStatement = connection.prepareStatement(sql);
+		ResultSet results = preparedStatement.executeQuery();
+		String columnData = null;
+		while (results.next()) {
+			if (results.getString(2).equals(columnName)){
+				columnData = results.getString(3);
+				break;
+			}
+		}
+		results.close();
+		return columnData;
+	}
+	
 	public static List<String> getTableColumnData(Connection connection, String table) throws SQLException {
 		ArrayList<String> columns = new ArrayList<String>();
 		String sql = "pragma table_info(" + table + ");";
