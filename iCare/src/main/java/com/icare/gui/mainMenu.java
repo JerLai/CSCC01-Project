@@ -16,12 +16,17 @@ import main.java.com.icare.accounts.User;
 
 public class mainMenu extends JPanel{
 
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 	private GridBagConstraints gbc;
-	
+
+	/**
+	 * Constructs the mainMenu content Panel by creating the several actions currently possible for the session of the User
+	 * @param connection
+	 * @param userSession
+	 * @param parent
+	 * @throws SQLException
+	 */
 	public mainMenu(Connection connection, User userSession, GUI parent) throws SQLException{
 
 		this.setLayout(parent.getLayout());
@@ -33,19 +38,22 @@ public class mainMenu extends JPanel{
 		JButton viewTable = new JButton("View Tables");
 		JButton admin = new JButton("Admin");
 		JButton addPatient = new JButton("Add Patient");
+		JButton uploadData = new JButton("Upload Data");
 
 
-
+		// Set all the elements to default JComponent size and add to Panel
 		welcome.setPreferredSize(defaultSize);
 		logout.setPreferredSize(defaultSize);
 		viewTable.setPreferredSize(defaultSize);
 		admin.setPreferredSize(defaultSize);
 		addPatient.setPreferredSize(defaultSize);
+		uploadData.setPreferredSize(defaultSize);
 		addElement(welcome,0,0);
 		addElement(logout, 0,1);
 		addElement(viewTable,0,2);
 		addElement(admin,0,3);
 		addElement(addPatient,0,4);
+		addElement(uploadData, 0, 5);
 		repaint();
 		logout.addActionListener(new ActionListener(){
 			@Override
@@ -85,6 +93,16 @@ public class mainMenu extends JPanel{
 //			}
 //
 //		});
+
+		uploadData.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				parent.next(new DataUpload(connection, userSession, parent));
+			}
+			
+		});
 	}
 
 
