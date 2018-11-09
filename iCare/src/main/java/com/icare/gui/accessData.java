@@ -44,6 +44,7 @@ public class accessData extends JPanel{
 	private JButton saveChanges;
 	private JButton addRow;
 	private JButton removeRow;
+	private JLabel systemOut;
 
 	public accessData(Connection connection, User userSession, GUI parent) throws SQLException{
 
@@ -81,7 +82,7 @@ public class accessData extends JPanel{
 		JButton importCsv = new JButton("Import");
 		JButton exportCsv = new JButton("Export");
 		JFileChooser chooser = new JFileChooser("Search csv");
-		JLabel systemOut = new JLabel();
+		systemOut = new JLabel();
 
 		addRow.setEnabled(false);
 		removeRow.setEnabled(false);
@@ -239,7 +240,6 @@ public class accessData extends JPanel{
 				}
 			}
 		});
-
 		data.getSelectionModel().addListSelectionListener(new ListSelectionListener(){
 			int r =-1;
 			String values;
@@ -294,25 +294,30 @@ public class accessData extends JPanel{
 		removeRow.setEnabled(bool);
 	}
 
-
-
-
 	private void save(JTable table) throws SQLException {
 		String updatedValues;
 		String condition;
 		String currentColumnType;
+		boolean withoutError = true;
+		boolean isMandatory;
 		if (table.isEditing())
 			table.getCellEditor().stopCellEditing();
+		outerSave:
 		for(int r: editedRows){
 			updatedValues = "";
 			for (int c = 1; c < table.getColumnCount(); c++){
 				currentColumnType = databaseSession.getTableColumnType(connection, currentTable, table.getColumnName(c));
+				isMandatory = databaseSession.getTableColumnMandatory(connection, currentTable, table.getColumnName(c));
 				if (table.getValueAt(r, c) != null)
 					if (currentColumnType.indexOf("char")>=0 || currentColumnType.indexOf("TEXT")>=0)
 						updatedValues += ", " + table.getColumnName(c) + "= '" + table.getValueAt(r, c) + "'";
 					else
 						updatedValues += ", " + table.getColumnName(c) + "=" + table.getValueAt(r, c);
-				else
+				else if (isMandatory) {
+					systemOut.setText("Save Unsuccessful! Missing mandatory field at row: " + r + "\t column: " + table.getColumnName(c));
+					withoutError = false;
+					break outerSave;
+				}else
 					updatedValues += ", " + table.getColumnName(c) + "= null";
 			}
 			updatedValues = updatedValues.substring(1);
@@ -320,14 +325,19 @@ public class accessData extends JPanel{
 				condition = databaseSession.findPrimaryKey(connection, currentTable) + "=" + table.getValueAt(r, 0);
 				databaseSession.updateData(connection, currentTable, updatedValues, condition);
 			} catch (SQLException e) {
+				withoutError = false;
 				e.printStackTrace();
 			}
 
+		}
+		if (withoutError){
+			systemOut.setText("Save Successful!");
 		}
 	}
 
 	private void updateTable(JTable table, String query) throws SQLException{
 		editedRows.clear();
+		systemOut.setText("");
 		setCurrentQueryActive(false);
 		if (query != null && !query.isEmpty()){
 			table.setModel(databaseSession.queryJTable(connection, query));

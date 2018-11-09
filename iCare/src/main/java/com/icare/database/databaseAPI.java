@@ -187,6 +187,21 @@ public class databaseAPI{
 		return columnData;
 	}
 	
+	public static boolean getTableColumnMandatory(Connection connection, String table, String columnName) throws SQLException{
+		String sql = "pragma table_info(" + table + ");";
+		PreparedStatement preparedStatement = connection.prepareStatement(sql);
+		ResultSet results = preparedStatement.executeQuery();
+		boolean isMandatory = false;
+		while (results.next()) {
+			if (results.getString(2).equals(columnName)){
+				isMandatory = results.getString(4).equals("1");
+				break;
+			}
+		}
+		results.close();
+		return isMandatory;
+	}
+	
 	public static List<String> getTableColumnData(Connection connection, String table) throws SQLException {
 		ArrayList<String> columns = new ArrayList<String>();
 		String sql = "pragma table_info(" + table + ");";
