@@ -7,5 +7,8 @@
 	<classpathentry kind="lib" path="src/rs2xml.jar"/>
 	<classpathentry kind="lib" path="C:/Users/hafiz/Documents/UofT/4th Year/1st Semester/CSCC01/Project/Team22/iCare/src/poi-3.17.jar"/>
 	<classpathentry kind="lib" path="C:/Users/hafiz/Documents/UofT/4th Year/1st Semester/CSCC01/Project/Team22/iCare/src/poi-ooxml-3.17.jar" sourcepath="src/poi-src-3.17-20170915.zip"/>
+	<classpathentry kind="lib" path="C:/Users/hafiz/Documents/UofT/4th Year/1st Semester/CSCC01/Project/Team22/iCare/src/xmlbeans-2.3.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/hafiz/Documents/UofT/4th Year/1st Semester/CSCC01/Project/Team22/iCare/src/commons-collections4-4.2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/hafiz/Documents/UofT/4th Year/1st Semester/CSCC01/Project/Team22/iCare/src/poi-ooxml-schemas-3.17.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

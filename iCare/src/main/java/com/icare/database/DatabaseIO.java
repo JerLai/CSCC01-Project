@@ -42,7 +42,7 @@ public class DatabaseIO {
 			try {
 				tableExistCols = (ArrayList<String>) databaseAPI.getTableColumnData(connection, fileTable);
 			} catch (Exception e) {
-				System.out.println("Error while checking if table exists for .csv file: " + fileName);
+				System.out.println("Error while checking if table exists for file: " + fileName);
 				e.printStackTrace();
 			}
 
@@ -51,14 +51,14 @@ public class DatabaseIO {
 			try {
 				oldTableExistCols = (ArrayList<String>) databaseAPI.getTableColumnData(connection, fileTable + "_old");
 			} catch (Exception e) {
-				System.out.println("Error while checking if _old table exists for .csv file: " + fileName);
+				System.out.println("Error while checking if _old table exists for file: " + fileName);
 				e.printStackTrace();
 			}
 			if (oldTableExistCols.size() > 0) {
 				try {
 					databaseAPI.deleteTable(connection, fileTable + "_old");
 				} catch (Exception e) {
-					System.out.println("Error while deleting _old table for .csv file: " + fileName);
+					System.out.println("Error while deleting _old table for file: " + fileName);
 					e.printStackTrace();
 				}
 			}
@@ -67,7 +67,7 @@ public class DatabaseIO {
 					databaseAPI.deleteTable(connection, fileTable + "_old");
 					databaseAPI.renameTable(connection, fileTable, fileTable + "_old");
 				} catch (Exception e) {
-					System.out.println("Error while saving _old table for .csv file: " + fileName);
+					System.out.println("Error while saving _old table for file: " + fileName);
 					e.printStackTrace();
 				}
 			}
@@ -77,12 +77,11 @@ public class DatabaseIO {
 			Row row = null;
 			Cell cell;
 			if (rowIterator.hasNext()) {
+				System.out.println("First row");
 				row = rowIterator.next();
 			}
 			if (rowIterator.hasNext()) {
-				row = rowIterator.next();
-			}
-			if (rowIterator.hasNext()) {
+				System.out.println("Second row");
 				row = rowIterator.next();
 			}
 			Iterator<Cell> cellIterator = row.cellIterator();
@@ -106,10 +105,12 @@ public class DatabaseIO {
 			// iterate through each row
 			while (rowIterator.hasNext()) {
 	            row = rowIterator.next();
+	            System.out.println("Next row");
 	            String rowValues = "";
 	            // iterate through each cell in the row
 	            while (cellIterator.hasNext()) {
 	                cell = cellIterator.next();
+	                System.out.println("Next cell");
 	                String cellValue = dataFormatter.formatCellValue(cell);
 	                rowValues += ", '" + cellValue + "'";
 	            }
