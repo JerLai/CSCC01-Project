@@ -1,9 +1,13 @@
 package main;
 
 import java.io.File;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
+
+import org.apache.poi.EncryptedDocumentException;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 
 import main.java.com.icare.database.makeDatabase;
 import main.java.com.icare.accounts.User;
@@ -26,8 +30,20 @@ public class main {
 		//databaseAPI.deleteTable(connection, "Data_TEMP");
 		//databaseAPI.deleteColumn(connection, "Data", "TestColumn");
 		//databaseAPI.deleteTable(connection, "DUP");
-		DatabaseIO.importData(connection, "csvTest2.csv");
-		DatabaseIO.exportData(connection, "csvTest3.csv", "csvTest2");
+		File file = new File("resources/iCARE_template.xlsx");
+		try {
+			DatabaseIO.importData(connection, file);
+		} catch (EncryptedDocumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InvalidFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		//DatabaseIO.exportData(connection, "csvTest3.csv", "csvTest2");
 		//String querySource = databaseSession.sourceQuery("Data", "ID, sample1, sample3");
 		//String queryTemporary = databaseSession.sourceQuery("Data2", "ID, sample1, sample3");
 		//exec = databaseSession.filterQuery(exec, "ID = 2");
