@@ -34,11 +34,11 @@ public class main {
 			makeDatabase.initialize();
 		Connection connection = databaseConnector.testConnection();
 
-		SwingUtilities.invokeLater(new Runnable(){
-			public void run(){
-				JFrame frame = new GUI("iCare", connection);
-			}
-		});
+		//SwingUtilities.invokeLater(new Runnable(){
+		//	public void run(){
+		//		JFrame frame = new GUI("iCare", connection);
+		//	}
+		//});
 		//databaseAPI.insertData(connection, "Data", "Sample1, Sample2, Sample3", "'Ha','HaHA','AHAHAHa'");
 		//databaseAPI.updateData(connection, "Data", "Sample1 = 'NO!'", "ID = 1");
 		//databaseAPI.addColumn(connection, "Data", "TestColumn", "char(20)");

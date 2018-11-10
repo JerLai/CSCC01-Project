@@ -4,8 +4,8 @@
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
 	<classpathentry kind="lib" path="src/sqlite-jdbc-3.23.1.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/5"/>
-	<classpathentry kind="lib" path="C:/Program Files/Java/jre1.8.0_191/lib/poi-3.17.jar"/>
-	<classpathentry kind="lib" path="C:/Program Files/Java/jre1.8.0_191/lib/poi-ooxml-3.17.jar"/>
 	<classpathentry kind="lib" path="src/rs2xml.jar"/>
+	<classpathentry kind="lib" path="C:/Users/hafiz/Documents/UofT/4th Year/1st Semester/CSCC01/Project/Team22/iCare/src/poi-3.17.jar"/>
+	<classpathentry kind="lib" path="C:/Users/hafiz/Documents/UofT/4th Year/1st Semester/CSCC01/Project/Team22/iCare/src/poi-ooxml-3.17.jar" sourcepath="src/poi-src-3.17-20170915.zip"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
