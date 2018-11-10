@@ -34,7 +34,7 @@ public class DatabaseIO {
         Sheet sheet = workbook.getSheetAt(0);
 
 		try {
-			String headers = null;
+			String headers = "";
 			String tableColData = "ID INTEGER PRIMARY KEY NOT NULL";
 
 			ArrayList<String> tableExistCols = new ArrayList<String>();
@@ -77,22 +77,24 @@ public class DatabaseIO {
 			Row row = null;
 			Cell cell;
 			if (rowIterator.hasNext()) {
-				System.out.println("First row");
 				row = rowIterator.next();
 			}
 			if (rowIterator.hasNext()) {
-				System.out.println("Second row");
 				row = rowIterator.next();
 			}
 			Iterator<Cell> cellIterator = row.cellIterator();
 			while (cellIterator.hasNext()) {
                 cell = cellIterator.next();
                 // determine column headers from 3rd row
+                tableColData += ", ";
+                String cellValue = cell.getRichStringCellValue().getString();
+                tableColData += cellValue;
+                tableColData += " char(255)";
+                headers += cellValue;
                 headers += ", ";
-                headers += cell.getRichStringCellValue().getString();
-                headers += " char(255)";
 			}
-			
+			headers = headers.substring(0, headers.length()-2);
+
 			// create table with corresponding columns
 			try {
 				databaseAPI.createTable(connection, fileTable, tableColData);
@@ -103,14 +105,14 @@ public class DatabaseIO {
 
 			DataFormatter dataFormatter = new DataFormatter();
 			// iterate through each row
+			String rowValues;
 			while (rowIterator.hasNext()) {
 	            row = rowIterator.next();
-	            System.out.println("Next row");
-	            String rowValues = "";
+	            rowValues = "";
 	            // iterate through each cell in the row
+	            cellIterator = row.cellIterator();
 	            while (cellIterator.hasNext()) {
 	                cell = cellIterator.next();
-	                System.out.println("Next cell");
 	                String cellValue = dataFormatter.formatCellValue(cell);
 	                rowValues += ", '" + cellValue + "'";
 	            }

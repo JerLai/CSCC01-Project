@@ -47,6 +47,19 @@ public class main {
 		//databaseAPI.deleteTable(connection, "Data_TEMP");
 		//databaseAPI.deleteColumn(connection, "Data", "TestColumn");
 		//databaseAPI.deleteTable(connection, "DUP");
+		//DatabaseIO.importData(connection, "csvTest2.csv");
+		//DatabaseIO.exportData(connection, "csvTest3.csv", "csvTest2");
+		//String querySource = databaseSession.sourceQuery("Data", "ID, sample1, sample3");
+		//String queryTemporary = databaseSession.sourceQuery("Data2", "ID, sample1, sample3");
+		//exec = databaseSession.filterQuery(exec, "ID = 2");
+		//querySource = databaseSession.sortQuery(querySource, "ID DESC");
+		//queryTemporary = databaseSession.sortQuery(queryTemporary, "ID DESC");
+		//databaseSession.createTempTable(connection, "Data2", querySource);
+		//System.out.println(String.format(databaseSession.queryData(connection, querySource)));
+		//System.out.println(String.format(databaseSession.queryData(connection, queryTemporary)));
+
+		// import testing
+		// adding .xlsx file for first time
 		File file = new File("resources/iCARE_template.xlsx");
 		try {
 			DatabaseIO.importData(connection, file);
@@ -60,16 +73,48 @@ public class main {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		//DatabaseIO.importData(connection, "csvTest2.csv");
-		//DatabaseIO.exportData(connection, "csvTest3.csv", "csvTest2");
-		//String querySource = databaseSession.sourceQuery("Data", "ID, sample1, sample3");
-		//String queryTemporary = databaseSession.sourceQuery("Data2", "ID, sample1, sample3");
-		//exec = databaseSession.filterQuery(exec, "ID = 2");
-		//querySource = databaseSession.sortQuery(querySource, "ID DESC");
-		//queryTemporary = databaseSession.sortQuery(queryTemporary, "ID DESC");
-		//databaseSession.createTempTable(connection, "Data2", querySource);
-		//System.out.println(String.format(databaseSession.queryData(connection, querySource)));
-		//System.out.println(String.format(databaseSession.queryData(connection, queryTemporary)));
+		// adding same named file again, moves existing filename table data to filename_old table and "overwrites data"
+		file = new File("resources/iCARE_template.xlsx");
+		try {
+			DatabaseIO.importData(connection, file);
+		} catch (EncryptedDocumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InvalidFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		// adding .xls file for first time
+		file = new File("resources/sample1.xls");
+		try {
+			DatabaseIO.importData(connection, file);
+		} catch (EncryptedDocumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InvalidFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		// adding same named file again, following same db table changes as above for .xlsx files
+		file = new File("resources/sample1.xls");
+		try {
+			DatabaseIO.importData(connection, file);
+		} catch (EncryptedDocumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InvalidFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		System.out.println("Finished");
 	}
 }
