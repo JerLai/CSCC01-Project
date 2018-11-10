@@ -29,8 +29,8 @@ public class ExcelFilter extends FileFilter{
 		for (String ext : ExcelUtils.acceptedExts) {
 			descriptor.append(String.format(".%s, ", ext));
 		}
-		descriptor.deleteCharAt(descriptor.length()-1);
-		descriptor.append(')');
-		return descriptor.toString();
+		String retStr = descriptor.substring(0, descriptor.length()-2);
+		retStr += ')';
+		return retStr;
 	}
 }
