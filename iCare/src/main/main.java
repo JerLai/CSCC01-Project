@@ -4,24 +4,41 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.List;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 import org.apache.poi.EncryptedDocumentException;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 
 import main.java.com.icare.database.makeDatabase;
+import main.java.com.icare.gui.GUI;
 import main.java.com.icare.accounts.User;
 import main.java.com.icare.database.DatabaseIO;
 import main.java.com.icare.database.databaseAPI;
 import main.java.com.icare.database.databaseSession;
+
 public class main {
 
+
+	JPanel panel1 = new JPanel();
+	JButton button = new JButton();
+	JLabel label = new JLabel();
+
 	public static void main(String[]args) throws SQLException{
+
 		final File f = new File("iCare.db");
 		if (!f.exists())
 			makeDatabase.initialize();
 		Connection connection = databaseConnector.testConnection();
-		//databaseAPI.insertUser(connection, "Kyle", "password", "J", "H", "receptionist");
+
+		SwingUtilities.invokeLater(new Runnable(){
+			public void run(){
+				JFrame frame = new GUI("iCare", connection);
+			}
+		});
 		//databaseAPI.insertData(connection, "Data", "Sample1, Sample2, Sample3", "'Ha','HaHA','AHAHAHa'");
 		//databaseAPI.updateData(connection, "Data", "Sample1 = 'NO!'", "ID = 1");
 		//databaseAPI.addColumn(connection, "Data", "TestColumn", "char(20)");
@@ -43,6 +60,7 @@ public class main {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		//DatabaseIO.importData(connection, "csvTest2.csv");
 		//DatabaseIO.exportData(connection, "csvTest3.csv", "csvTest2");
 		//String querySource = databaseSession.sourceQuery("Data", "ID, sample1, sample3");
 		//String queryTemporary = databaseSession.sourceQuery("Data2", "ID, sample1, sample3");
@@ -54,6 +72,4 @@ public class main {
 		//System.out.println(String.format(databaseSession.queryData(connection, queryTemporary)));
 		System.out.println("Finished");
 	}
-
-
 }
