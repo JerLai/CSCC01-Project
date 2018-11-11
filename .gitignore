@@ -57,12 +57,13 @@ buildNumber.properties
 # OS Files
 Thumbs.db
 .DS_Store
-<<<<<<< HEAD
 /bin/
 iCare/.recommenders/*
 
 iCare/.metadata/*
-=======
 bin/
->>>>>>> master
->>>>>>> us3database
+
+iCare/resources/iCare.csv
+iCare/resources/New_iCARE_Template_Comb_with_Examples.xlsx
+iCare/iCare.db
+
