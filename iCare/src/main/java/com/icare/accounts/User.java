@@ -3,6 +3,7 @@ package main.java.com.icare.accounts;
 public abstract class User {
 
 	public String username;
+	public String password;
 	public String firstName;
 	public String lastName;
 	public int ID;
@@ -10,13 +11,15 @@ public abstract class User {
 	/**
 	 * Creates a new User with relevant information.
 	 * @param username
+	 * @param password
 	 * @param firstName
 	 * @param lastName
 	 * @param iD increments by 1 for each User (unique Identifier)
 	 */
-	public User(String username, String firstName, String lastName, int iD) {
+	public User(String username, String password, String firstName, String lastName, int iD) {
 		super();
 		this.username = username;
+		this.password = password;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		ID = iD;
@@ -34,6 +37,20 @@ public abstract class User {
 	 */
 	public void setUsername(String username) {
 		this.username = username;
+	}
+
+	/**
+	 * @return the password
+	 */
+	public String getPassword() {
+		return password;
+	}
+
+	/**
+	 * @param password the password to set
+	 */
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
 	/**
@@ -81,6 +98,7 @@ public abstract class User {
 		result = prime * result + ID;
 		result = prime * result + ((firstName == null) ? 0 : firstName.hashCode());
 		result = prime * result + ((lastName == null) ? 0 : lastName.hashCode());
+		result = prime * result + ((password == null) ? 0 : password.hashCode());
 		result = prime * result + ((username == null) ? 0 : username.hashCode());
 		return result;
 	}
@@ -108,6 +126,11 @@ public abstract class User {
 			if (other.lastName != null)
 				return false;
 		} else if (!lastName.equals(other.lastName))
+			return false;
+		if (password == null) {
+			if (other.password != null)
+				return false;
+		} else if (!password.equals(other.password))
 			return false;
 		if (username == null) {
 			if (other.username != null)

@@ -46,9 +46,9 @@ public class databaseDriver {
       statement.executeUpdate(sql);
       sql = "CREATE TABLE Data " 
               + "(ID INTEGER PRIMARY KEY NOT NULL," 
-              + "sample1 char(255),"
-              + "sample2 char(255),"
-              + "sample3 char(255))";
+              + "sample1 TEXT NOT NULL,"
+              + "sample2 TEXT NOT NULL,"
+              + "sample3 TEXT NOT NULL)";
       
       statement.executeUpdate(sql);
       statement.close();

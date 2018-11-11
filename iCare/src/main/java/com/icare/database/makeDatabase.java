@@ -13,6 +13,7 @@ public class makeDatabase {
     
     Connection connection = databaseDriver.connectDataBase();
     try {
+      
       initializeDatabase(connection);
     } catch (Exception e) {
       e.printStackTrace();
