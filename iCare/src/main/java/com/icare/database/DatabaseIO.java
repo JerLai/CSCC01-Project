@@ -16,7 +16,7 @@ public class DatabaseIO {
 	private static final String DELIMITER = ",";
 	private static final String NEW_LINE_SEPARATOR = "\n";
 
-	public static void importData(Connection connection, File file) {
+	public static boolean importData(Connection connection, File file) {
 		// get file name and decide table name
         String fileName = file.getName();
 		String fileTable = fileName.substring(0, fileName.indexOf("."));
@@ -27,6 +27,7 @@ public class DatabaseIO {
 		} catch (Exception e) {
 			System.out.println("Error while reading file: " + fileName);
 			e.printStackTrace();
+			return false;
 		}
         // first sheet
         Sheet sheet = workbook.getSheetAt(0);
@@ -42,6 +43,7 @@ public class DatabaseIO {
 			} catch (Exception e) {
 				System.out.println("Error while checking if table exists for file: " + fileName);
 				e.printStackTrace();
+				return false;
 			}
 
 			ArrayList<String> oldTableExistCols = new ArrayList<String>();
@@ -51,6 +53,7 @@ public class DatabaseIO {
 			} catch (Exception e) {
 				System.out.println("Error while checking if _old table exists for file: " + fileName);
 				e.printStackTrace();
+				return false;
 			}
 			if (oldTableExistCols.size() > 0) {
 				try {
@@ -58,6 +61,7 @@ public class DatabaseIO {
 				} catch (Exception e) {
 					System.out.println("Error while deleting _old table for file: " + fileName);
 					e.printStackTrace();
+					return false;
 				}
 			}
 			if (tableExistCols.size() > 0) {
@@ -67,6 +71,7 @@ public class DatabaseIO {
 				} catch (Exception e) {
 					System.out.println("Error while saving _old table for file: " + fileName);
 					e.printStackTrace();
+					return false;
 				}
 			}
 
@@ -99,6 +104,7 @@ public class DatabaseIO {
 			} catch (Exception e) {
 				System.out.println("Error while inserting data for file: " + fileName);
 				e.printStackTrace();
+				return false;
 			}
 
 			DataFormatter dataFormatter = new DataFormatter();
@@ -121,11 +127,13 @@ public class DatabaseIO {
 				} catch (Exception e) {
 					System.out.println("Error while inserting data for file: " + fileName);
 					e.printStackTrace();
+					return false;
 				}
 	        }
 		} catch (Exception e) {
 			System.out.println("Error while reading file: " + fileName);
 			e.printStackTrace();
+			return false;
 		} finally {
 			try {
 				// close workbook
@@ -135,6 +143,7 @@ public class DatabaseIO {
 				e.printStackTrace();
 			}
 		}
+		return true;
 	}
 
 	public static void exportData(Connection connection, String fileName) {
