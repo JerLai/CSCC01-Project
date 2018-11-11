@@ -61,60 +61,16 @@ public class main {
 		// import testing
 		// adding .xlsx file for first time
 		File file = new File("resources/iCARE_template.xlsx");
-		try {
-			DatabaseIO.importData(connection, file);
-		} catch (EncryptedDocumentException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InvalidFormatException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		DatabaseIO.importData(connection, file);
 		// adding same named file again, moves existing filename table data to filename_old table and "overwrites data"
 		file = new File("resources/iCARE_template.xlsx");
-		try {
-			DatabaseIO.importData(connection, file);
-		} catch (EncryptedDocumentException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InvalidFormatException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		DatabaseIO.importData(connection, file);
 		// adding .xls file for first time
 		file = new File("resources/sample1.xls");
-		try {
-			DatabaseIO.importData(connection, file);
-		} catch (EncryptedDocumentException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InvalidFormatException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		DatabaseIO.importData(connection, file);
 		// adding same named file again, following same db table changes as above for .xlsx files
 		file = new File("resources/sample1.xls");
-		try {
-			DatabaseIO.importData(connection, file);
-		} catch (EncryptedDocumentException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InvalidFormatException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		DatabaseIO.importData(connection, file);
 		System.out.println("Finished");
 	}
 }
