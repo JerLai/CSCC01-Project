@@ -9,8 +9,6 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import org.apache.poi.EncryptedDocumentException;
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.*;
 
 public class DatabaseIO {
@@ -18,7 +16,7 @@ public class DatabaseIO {
 	private static final String DELIMITER = ",";
 	private static final String NEW_LINE_SEPARATOR = "\n";
 
-	public static void importData(Connection connection, File file) throws EncryptedDocumentException, InvalidFormatException, IOException {
+	public static void importData(Connection connection, File file) {
 		// get file name and decide table name
         String fileName = file.getName();
 		String fileTable = fileName.substring(0, fileName.indexOf("."));
