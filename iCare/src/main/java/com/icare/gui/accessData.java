@@ -48,6 +48,7 @@ public class accessData extends JPanel{
 	private JButton addRow;
 	private JButton removeRow;
 	private JLabel systemOut;
+	private JComboBox<String> listTables;
 
 	public accessData(Connection connection, User userSession, GUI parent) throws SQLException{
 
@@ -89,12 +90,8 @@ public class accessData extends JPanel{
 
 		addRow.setEnabled(false);
 		removeRow.setEnabled(false);
-		JComboBox<String> listTables = new JComboBox<String>();
-		listTables.addItem("");
-		for (String s: databaseSession.getAllTables(connection)){
-			if (!s.equals("Login"))
-				listTables.addItem(s);
-		}
+		listTables = new JComboBox<String>();
+		updateTablesList();
 		listTables.addItemListener(new ItemListener(){
 
 			@Override
@@ -132,7 +129,7 @@ public class accessData extends JPanel{
 		submitQuery.setPreferredSize(defaultSize);
 		tableScroll.setPreferredSize(new Dimension(defaultSize.width*5, window.height/2));
 		chooser.setPreferredSize(new Dimension(defaultSize.width*3,defaultSize.height*20));
-		
+
 		addRow.setPreferredSize(defaultSize);
 		gbc.gridwidth = 4;
 		addElement(systemOut,1,0);
@@ -157,8 +154,9 @@ public class accessData extends JPanel{
 				chooser.addChoosableFileFilter(new FileNameExtensionFilter("xls", "xlsx"));
 				chooser.showOpenDialog(parent);
 				File file = chooser.getSelectedFile();
-				if (file != null)
+				if (file != null){
 					DatabaseIO.importData(connection, file);
+				}
 				try {
 					parent.next(new accessData(connection, userSession, parent));
 				} catch (SQLException e1) {
@@ -386,4 +384,11 @@ public class accessData extends JPanel{
 		repaint();
 	}
 
+	private void updateTablesList() throws SQLException{
+		listTables.addItem("");
+		for (String s: databaseSession.getAllTables(connection)){
+			if (!s.equals("Login"))
+				listTables.addItem(s);
+		}
+	}
 }
