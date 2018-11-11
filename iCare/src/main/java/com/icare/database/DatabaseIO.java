@@ -8,6 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import org.apache.poi.ss.usermodel.*;
 
@@ -16,6 +17,7 @@ public class DatabaseIO {
 	private static final String DELIMITER = ",";
 	private static final String NEW_LINE_SEPARATOR = "\n";
 
+	@SuppressWarnings("deprecation")
 	public static boolean importData(Connection connection, File file) {
 		// get file name and decide table name
         String fileName = file.getName();
@@ -75,28 +77,25 @@ public class DatabaseIO {
 				}
 			}
 
-			// iterate through 3rd row to get column headers
-			Iterator<Row> rowIterator = sheet.rowIterator();
+			// iterate through 2nd row to get column headers
+			int r = 1;
 			Row row = null;
 			Cell cell;
-			if (rowIterator.hasNext()) {
-				row = rowIterator.next();
+			if (r < sheet.getLastRowNum()) {
+				row = sheet.getRow(r);
 			}
-			if (rowIterator.hasNext()) {
-				row = rowIterator.next();
-			}
-			Iterator<Cell> cellIterator = row.cellIterator();
-			while (cellIterator.hasNext()) {
-                cell = cellIterator.next();
+			for (int c = 0; c < row.getLastCellNum(); c++) {
+                cell = row.getCell(c);
                 // determine column headers from 3rd row
                 tableColData += ", ";
                 String cellValue = cell.getRichStringCellValue().getString();
                 tableColData += cellValue;
                 tableColData += " char(255)";
-                headers += cellValue;
-                headers += ", ";
+                headers += "'" + cellValue;
+                headers += "', ";
 			}
 			headers = headers.substring(0, headers.length()-2);
+			System.out.println(headers);
 
 			// create table with corresponding columns
 			try {
@@ -110,17 +109,22 @@ public class DatabaseIO {
 			DataFormatter dataFormatter = new DataFormatter();
 			// iterate through each row
 			String rowValues;
-			while (rowIterator.hasNext()) {
-	            row = rowIterator.next();
+			for (int r1 = r+1; r1 <= sheet.getLastRowNum(); r1++) {
+	            row = sheet.getRow(r1);
 	            rowValues = "";
 	            // iterate through each cell in the row
-	            cellIterator = row.cellIterator();
-	            while (cellIterator.hasNext()) {
-	                cell = cellIterator.next();
+	            for (int c1 = 0; c1 < row.getLastCellNum(); c1++) {
+	                cell = row.getCell(c1);
 	                String cellValue = dataFormatter.formatCellValue(cell);
-	                rowValues += ", '" + cellValue + "'";
+	                if (cellValue.equals("")) {
+	                	rowValues += ", " + null + "";
+	                } else {
+	                	rowValues += ", '" + cellValue + "'";
+	                }
 	            }
 	            rowValues = rowValues.substring(2);
+	            System.out.println(rowValues);
+	            System.out.println(headers);
 	            // add into table
 	            try {
 					databaseAPI.insertData(connection, fileTable, headers, rowValues);
