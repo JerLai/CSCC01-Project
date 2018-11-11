@@ -17,6 +17,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import main.java.com.icare.accounts.User;
+import main.java.com.icare.database.DatabaseIO;
 
 /**
  * GUI display to upload files onto data management system
@@ -39,6 +40,7 @@ public class DataUpload extends JPanel{
 	 * @param userSession the user that is logged in
 	 * @param parent the parent JFrame
 	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public DataUpload(Connection connection, User userSession, GUI parent) {
 		this.setLayout(parent.getLayout());
 		Dimension defaultSize = parent.getDefaultSize();
@@ -85,9 +87,9 @@ public class DataUpload extends JPanel{
 				int returnVal = fileChooser.showDialog(parent, "Open");
 				if (returnVal == JFileChooser.APPROVE_OPTION) {
 					file = fileChooser.getSelectedFile();
-					JOptionPane.showMessageDialog(parent, "File is ready to be upload.", "File Uploaded", JOptionPane.PLAIN_MESSAGE);
+					JOptionPane.showMessageDialog(parent, "File is ready to be uploaded.", "File Primed", JOptionPane.PLAIN_MESSAGE);
 				}
-				fileChooser.setSelectedFile(null);
+				//fileChooser.setSelectedFile(null);
 			}
 		});
 
@@ -96,8 +98,13 @@ public class DataUpload extends JPanel{
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				//TODO: Implementation of uploading file
-				JOptionPane.showMessageDialog(parent, "File is accepted.", "Upload Success", JOptionPane.PLAIN_MESSAGE);
+				boolean retVal = DatabaseIO.importData(connection, file);
+				if (retVal) {
+					JOptionPane.showMessageDialog(parent, "File is accepted.", "Upload Success", JOptionPane.PLAIN_MESSAGE);
+				}
+				else {
+					JOptionPane.showMessageDialog(parent, "Error Uploading File", "Upload Success", JOptionPane.ERROR_MESSAGE);
+				}
 			}
 			
 		});

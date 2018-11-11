@@ -11,7 +11,7 @@ import java.util.Arrays;
  */
 public class ExcelUtils {
 
-	public final static String [] strings = {"xls", "xlsb", "xlsx", "xlsm"};
+	public final static String [] strings = {"xls", "xlsx"}; //"xlsb", "xlsm"};
 	public final static ArrayList<String> acceptedExts = new ArrayList<String>(Arrays.asList(strings));
 
 	/**
