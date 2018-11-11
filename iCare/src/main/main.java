@@ -10,9 +10,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-import org.apache.poi.EncryptedDocumentException;
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-
 import main.java.com.icare.database.makeDatabase;
 import main.java.com.icare.gui.GUI;
 import main.java.com.icare.accounts.User;
