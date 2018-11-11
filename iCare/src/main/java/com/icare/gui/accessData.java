@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -22,6 +23,8 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 
 import main.java.com.icare.accounts.User;
@@ -128,6 +131,8 @@ public class accessData extends JPanel{
 		queryInput.setPreferredSize(new Dimension(defaultSize.width*3, defaultSize.height));
 		submitQuery.setPreferredSize(defaultSize);
 		tableScroll.setPreferredSize(new Dimension(defaultSize.width*5, window.height/2));
+		chooser.setPreferredSize(new Dimension(defaultSize.width*3,defaultSize.height*20));
+		
 		addRow.setPreferredSize(defaultSize);
 		gbc.gridwidth = 4;
 		addElement(systemOut,1,0);
@@ -149,11 +154,11 @@ public class accessData extends JPanel{
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				chooser.addChoosableFileFilter(new FileNameExtensionFilter("xls", "xlsx"));
 				chooser.showOpenDialog(parent);
-				chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-				String path = chooser.getSelectedFile().getName();
-				if (path != null)
-					DatabaseIO.importData(connection, chooser.getSelectedFile().getName());
+				File file = chooser.getSelectedFile();
+				if (file != null)
+					DatabaseIO.importData(connection, file);
 				try {
 					parent.next(new accessData(connection, userSession, parent));
 				} catch (SQLException e1) {
@@ -303,33 +308,33 @@ public class accessData extends JPanel{
 		if (table.isEditing())
 			table.getCellEditor().stopCellEditing();
 		outerSave:
-		for(int r: editedRows){
-			updatedValues = "";
-			for (int c = 1; c < table.getColumnCount(); c++){
-				currentColumnType = databaseSession.getTableColumnType(connection, currentTable, table.getColumnName(c));
-				isMandatory = databaseSession.getTableColumnMandatory(connection, currentTable, table.getColumnName(c));
-				if (table.getValueAt(r, c) != null)
-					if (currentColumnType.indexOf("char")>=0 || currentColumnType.indexOf("TEXT")>=0)
-						updatedValues += ", " + table.getColumnName(c) + "= '" + table.getValueAt(r, c) + "'";
-					else
-						updatedValues += ", " + table.getColumnName(c) + "=" + table.getValueAt(r, c);
-				else if (isMandatory) {
-					systemOut.setText("Save Unsuccessful! Missing mandatory field at row: " + r + "\t column: " + table.getColumnName(c));
+			for(int r: editedRows){
+				updatedValues = "";
+				for (int c = 1; c < table.getColumnCount(); c++){
+					currentColumnType = databaseSession.getTableColumnType(connection, currentTable, table.getColumnName(c));
+					isMandatory = databaseSession.getTableColumnMandatory(connection, currentTable, table.getColumnName(c));
+					if (table.getValueAt(r, c) != null)
+						if (currentColumnType.indexOf("char")>=0 || currentColumnType.indexOf("TEXT")>=0)
+							updatedValues += ", " + table.getColumnName(c) + "= '" + table.getValueAt(r, c) + "'";
+						else
+							updatedValues += ", " + table.getColumnName(c) + "=" + table.getValueAt(r, c);
+					else if (isMandatory) {
+						systemOut.setText("Save Unsuccessful! Missing mandatory field at row: " + r + "\t column: " + table.getColumnName(c));
+						withoutError = false;
+						break outerSave;
+					}else
+						updatedValues += ", " + table.getColumnName(c) + "= null";
+				}
+				updatedValues = updatedValues.substring(1);
+				try {
+					condition = databaseSession.findPrimaryKey(connection, currentTable) + "=" + table.getValueAt(r, 0);
+					databaseSession.updateData(connection, currentTable, updatedValues, condition);
+				} catch (SQLException e) {
 					withoutError = false;
-					break outerSave;
-				}else
-					updatedValues += ", " + table.getColumnName(c) + "= null";
-			}
-			updatedValues = updatedValues.substring(1);
-			try {
-				condition = databaseSession.findPrimaryKey(connection, currentTable) + "=" + table.getValueAt(r, 0);
-				databaseSession.updateData(connection, currentTable, updatedValues, condition);
-			} catch (SQLException e) {
-				withoutError = false;
-				e.printStackTrace();
-			}
+					e.printStackTrace();
+				}
 
-		}
+			}
 		if (withoutError){
 			systemOut.setText("Save Successful!");
 		}
