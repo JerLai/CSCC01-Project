@@ -77,22 +77,44 @@ public class DatabaseIO {
 
 			// iterate through 3rd row to get column headers
 			Iterator<Row> rowIterator = sheet.rowIterator();
+			Iterator<Row> rowIterator1 = sheet.rowIterator();
 			Row row = null;
+			Row row1 = null;
 			Cell cell;
+			Cell cell1;
 			if (rowIterator.hasNext()) {
 				row = rowIterator.next();
+				row1 = rowIterator1.next();
 			}
 			if (rowIterator.hasNext()) {
 				row = rowIterator.next();
+				row1 = rowIterator1.next();
+			}
+			if (rowIterator1.hasNext()) {
+				row1 = rowIterator1.next();
 			}
 			Iterator<Cell> cellIterator = row.cellIterator();
+			Iterator<Cell> cellIterator1 = row1.cellIterator();
+			String notNull = " char(255) NOT NULL";
+			String type = " char(255)";
+			String typeUsed = null;
 			while (cellIterator.hasNext()) {
                 cell = cellIterator.next();
+                cell1 = cellIterator1.next();
+                // check if mandatory field
+                short fontIndex = cell1.getCellStyle().getFontIndex();
+                Font font = workbook.getFontAt(fontIndex);
+                short fontColor = font.getColor();
+                if (fontColor != IndexedColors.WHITE.index) {
+                	typeUsed = notNull;
+                } else {
+                	typeUsed = type;
+                }
                 // determine column headers from 3rd row
                 tableColData += ", ";
                 String cellValue = cell.getRichStringCellValue().getString();
                 tableColData += cellValue;
-                tableColData += " char(255)";
+                tableColData += typeUsed;
                 headers += cellValue;
                 headers += ", ";
 			}
@@ -102,7 +124,7 @@ public class DatabaseIO {
 			try {
 				databaseAPI.createTable(connection, fileTable, tableColData);
 			} catch (Exception e) {
-				System.out.println("Error while inserting data for file: " + fileName);
+				System.out.println("Error while creating table for file: " + fileName);
 				e.printStackTrace();
 				return false;
 			}
@@ -118,13 +140,18 @@ public class DatabaseIO {
 	            while (cellIterator.hasNext()) {
 	                cell = cellIterator.next();
 	                String cellValue = dataFormatter.formatCellValue(cell);
-	                rowValues += ", '" + cellValue + "'";
+	                String rowAdd = ", '" + cellValue + "'";
+	                if (cellValue.equals("")) {
+	                	rowAdd = ", " + null + "";
+	                }
+	                rowValues += rowAdd;
 	            }
 	            rowValues = rowValues.substring(2);
 	            // add into table
 	            try {
 					databaseAPI.insertData(connection, fileTable, headers, rowValues);
 				} catch (Exception e) {
+					databaseAPI.deleteTable(connection, fileTable);
 					System.out.println("Error while inserting data for file: " + fileName);
 					e.printStackTrace();
 					return false;
