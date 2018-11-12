@@ -10,7 +10,7 @@
 - A runnable GUI program should pop up
 
 2. Logging In
-- What should be shown is a Login Page. There should already be a default username and password (Username: John, Password: password)
+- What should be shown is a Login Page. There should already be a default username and password (username is John, password is password)
 - Click the "login" button, Login should be successful (in the event it isn't a Login Unsuccessful message should display)
 - Afterwards, what should be shown is a User Homepage with a list of Actions they can do (some not implemented for now)
 
@@ -65,6 +65,13 @@ and/or mandatory fields are filled" will display.
 	- Click "Upload", File should have been properly stored onto database
 	- Check this using DB Browser for SQLite, now that data has been uploaded, go to the Browse Data tab and click on the refresh button
 	- There should now be a table called "sample1" that can be selected in the Table Drop-down menu or visible in Database Structure tab
+	- The data should match that of the original Excel file
+- Follow the instructions in 3.3.5 and navigate to "sample1.xls" again
+	- Click on "sample1.xls", File should be ready for upload
+	- Click "Upload", File should have been properly stored onto database
+	- Check this using DB Browser for SQLite, now that data has been uploaded, go to the Browse Data tab and click on the refresh button
+	- There should now be a table called "sample1" and a table called "sample1_old" that can be selected in the Table Drop-down menu or visible in Database Structure tab
+	- The "sample1_old" table should hold the same data as the "sample1" table, the _old tables are for saving the n-1 copy of templates uploaded
 	- The data should match that of the original Excel file
 - Follow the instructions in 3.3.5 and navigate to "sample1.xlsx", same contents as sample1.xls but using the newer .xlsx format for Excel
 	- Click on "sample1.xlsx", File should be ready for upload
