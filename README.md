@@ -17,3 +17,4 @@ Activity Log
 11/07/2018  Completed planning for sprint4.
 11/08/2018  Code Review documented and pushed in deliverable4 folder. Video too large, working on solution.
 11/08/2018  Re-ordered US in Product Backlog as per discussion with Client (reasons detailed in Product_Backlog_3 in product_backlog folder). Planning for S4 adjusted accordingly.
+11/11/2018  Updated S4 Tasks doc to reflect moving of a Task from US3 to US6 (had been incorrectly included there). The Plan doc is updated accordingly (the actual plan didn't change, just moving that task to US6)
