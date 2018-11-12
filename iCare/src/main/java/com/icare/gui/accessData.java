@@ -152,7 +152,7 @@ public class accessData extends JPanel{
 				chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 				String path = chooser.getSelectedFile().getName();
 				if (path != null)
-					DatabaseIO.importData(connection, chooser.getSelectedFile().getName());
+					DatabaseIO.importData(connection, chooser.getSelectedFile());
 				try {
 					parent.next(new accessData(connection, userSession, parent));
 				} catch (SQLException e1) {
