@@ -56,10 +56,10 @@ and/or mandatory fields are filled" will display.
 3.3.6 Test Cases
 - Follow the instructions in 3.3.5 and navigate to "iCARE_template.xlsx", the template given by the Client which has empty values, non-empty values, several rows and columns
 	- Click on "iCARE_template.xlsx", File should be ready for upload
-	- Click "Upload", File should have been properly stored onto database this one may take a while as the template is a huge file with many rows and columns
-	- Check this using DB Browser for SQLite, now that data has been uploaded, go to the Browse Data tab and click on the refresh button
-	- There should now be a table called "iCARE_template" that can be selected in the Table Drop-down menu or visible in Database Structure tab
-	- The data should match that of the original Excel file
+	- Click "Upload", this one may take a while as the template is a huge file with many rows and columns
+	- You should recieve a popup stating that the import was unsuccessful, this is because mandatory fields within this template (marked by the orange text color) were missing values
+	- This is not allowed, so import was stopped
+	- Check this using DB Browser for SQLite, go to the Browse Data tab and click on the refresh button, there will be no iCare_template table, since the table was not fully imported, it was deleted when mandatory fields were found to be missing
 - Follow the instructions in 3.3.5 and navigate to "sample1.xls", a test file with no missing data
 	- Click on "sample1.xls", File should be ready for upload
 	- Click "Upload", File should have been properly stored onto database
@@ -78,10 +78,11 @@ and/or mandatory fields are filled" will display.
 	- Click "Upload", File should have been properly stored onto database
 	- Check this using DB Browser for SQLite, now that data has been uploaded, go to the Browse Data tab and click on the refresh button
 	- There should now be a table called "sample1_old" that can be selected in the Table Drop-down menu or visible in Database Structure tab
-	- This is intentional for now, sample1 now is a table with the data from the latest upload, and sample1_old is the old table before the upload
+	- This file, with the same name as "sample1.xls" will result in the following (like above case)
+	- sample1 now is a table with the data from the latest upload, and sample1_old is the old table before the upload
 - Follow the instructions in 3.3.5 and navigate to "sample2.xlsx", missing some values in some rows or coumns
 	- Click on "sample2.xlsx", File should be ready for upload
 	- Click "Upload", File should have been properly stored onto database
 	- Check this using DB Browser for SQLite, now that data has been uploaded, go to the Browse Data tab and click on the refresh button
 	- There should now be a table called "sample2" that can be selected in the Table Drop-down menu or visible in Database Structure tab
-	- In the Browser Data tab in DB Browser, for the fields that were missing values, the value of "null" should have been inserted
+	- In the Browser Data tab in DB Browser, for the fields that were missing values (note they are not in mandatory fields), the value of "null" should have been inserted
