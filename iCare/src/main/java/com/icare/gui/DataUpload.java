@@ -104,7 +104,7 @@ public class DataUpload extends JPanel{
 				}
 				else {
 					JOptionPane.showMessageDialog(parent, "Error Uploading File, make sure File isn't"
-							+ "corrupted and/or mandatory fields filled", "Upload Failed", JOptionPane.ERROR_MESSAGE);
+							+ "corrupted and/or mandatory fields are filled", "Upload Failed", JOptionPane.ERROR_MESSAGE);
 				}
 				file = null;
 			}

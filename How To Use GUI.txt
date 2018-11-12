@@ -1,0 +1,80 @@
+1. Opening the Program
+- Clone the Team22 repository
+- Open up Eclipse and make sure you are checked out into the master branch
+- In Eclipse, make sure your Workspace is "Team22"
+- In Eclipse, click "File" -> "New" -> "Java Project"
+- Name the Java Project "iCare"
+- Because the iCare folder already exists in Team22, your entire project should be instantiated
+- In the Package Explorer of Eclipse, the Project Folder 'iCare" should show up, just in case, right click and refresh to make sure it has all the files
+- Click the run button (green play button) on the upper tools bar
+- A runnable GUI program should pop up
+
+2. Logging In
+- What should be shown is a Login Page. There should already be a default username and password
+- Click the "login" button, Login should be successful (in the event it isn't a Login Unsuccessful message should display)
+- Afterwards, what should be shown is a User Homepage with a list of Actions they can do (some not implemented for now)
+
+3.1 Logging Out
+- Returns you back to the Login Page
+3.2 View Tables
+- Not covered in the sprint so leave out for now
+
+3.3 Import Data
+- Some prerequisites must be covered first
+
+3.3.1 DB Browser for SQLite
+- Install this software from https://sqlitebrowser.org/ and download the installer or code for whichever OS you are using
+- This is a visual tool that enables you to view, create, design and edit database files compatibile with SQLite
+
+3.3.2 Resources and Database
+- Under the Team22 folder there is a folder called iCare. Enter this folder and there is a file called iCare.db, this is the database file
+- Under the same iCare folder there is a folder called resources, in this folder exists 4 files, iCARE_template.xlsx, sample1.xls, sample1.xlsx, sample2.xlsx
+
+3.3.3 Using DB Browser for SQLite
+- First make sure the database file is a clean one. Open up DB Browser and click on Open Database
+- Locate the database file specified above
+- Here will be a database of all stored data, in the clean one there should only be one table of data, "Login" which is the table of all registered Users
+- The only one in here should be the default username and password that we used to log in, a User of "John" and Password of "password"
+- In the Browser Data tab, you can view the data for all Tables as an easy to access visual table
+
+3.3.4 GUI of Import/Upload Data
+- Back onto the program, there should be 3 buttons and a Drop-down menu
+- Open: Allows you to select a file on your file system to upload to the database for storage
+- Upload: Uploads data onto the database
+- Main Menu: returns back to the User Homepage
+- Drop-down menu: allows you to select what type of file to upload to the database (currently only supports .xls and .xlsx Excel files for the iCare template)
+
+3.3.5 Using the Upload Data Page
+- Make sure database is clean, if 3.3.3 wasn't followed
+- In the Drop-down menu select "iCare Excel" (the only option), This will only make it so that we search for only Excel files
+- Click "Open", a file explorer should pop up, search for your desired Excel file to upload. In this case navigate to the resources folder as specificied in 3.3.2
+- Click on "Open", on success a Message Box will pop up saying "File is ready to be uploaded" with whichever given file you select
+- Click on "Upload", on success a Message Box saying "Upload Success" will pop up, on failure "Error Uploading File, make sure File isn't corrupted
+and/or mandatory fields are filled" will display.
+
+
+3.3.6 Test Cases
+- Follow the instructions in 3.3.5 and navigate to "iCARE_template.xlsx", the template given by the Client which has empty values, non-empty values, several rows and columns
+	- Click on "iCARE_template.xlsx", File should be ready for upload
+	- Click "Upload", File should have been properly stored onto database this one may take a while as the template is a huge file with many rows and columns
+	- Check this using DB Browser for SQLite, now that data has been uploaded, go to the Browse Data tab and click on the refresh button
+	- There should now be a table called "iCARE_template" that can be selected in the Table Drop-down menu or visible in Database Structure tab
+	- The data should match that of the original Excel file
+- Follow the instructions in 3.3.5 and navigate to "sample1.xls", a test file with no missing data
+	- Click on "sample1.xls", File should be ready for upload
+	- Click "Upload", File should have been properly stored onto database
+	- Check this using DB Browser for SQLite, now that data has been uploaded, go to the Browse Data tab and click on the refresh button
+	- There should now be a table called "sample1" that can be selected in the Table Drop-down menu or visible in Database Structure tab
+	- The data should match that of the original Excel file
+- Follow the instructions in 3.3.5 and navigate to "sample1.xlsx", same contents as sample1.xls but using the newer .xlsx format for Excel
+	- Click on "sample1.xlsx", File should be ready for upload
+	- Click "Upload", File should have been properly stored onto database
+	- Check this using DB Browser for SQLite, now that data has been uploaded, go to the Browse Data tab and click on the refresh button
+	- There should now be a table called "sample1_old" that can be selected in the Table Drop-down menu or visible in Database Structure tab
+	- This is intentional for now, sample1 now is a table with the data from the latest upload, and sample1_old is the old table before the upload
+- Follow the instructions in 3.3.5 and navigate to "sample2.xlsx", missing some values in some rows or coumns
+	- Click on "sample2.xlsx", File should be ready for upload
+	- Click "Upload", File should have been properly stored onto database
+	- Check this using DB Browser for SQLite, now that data has been uploaded, go to the Browse Data tab and click on the refresh button
+	- There should now be a table called "sample2" that can be selected in the Table Drop-down menu or visible in Database Structure tab
+	- In the Browser Data tab in DB Browser, for the fields that were missing values, the value of "null" should have been inserted
