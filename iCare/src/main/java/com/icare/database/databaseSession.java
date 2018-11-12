@@ -17,7 +17,6 @@ import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 
-import net.proteanit.sql.DbUtils;
 
 public class databaseSession extends databaseAPI{
 
@@ -65,9 +64,26 @@ public class databaseSession extends databaseAPI{
 		String sql = query;
 		PreparedStatement preparedStatement = connection.prepareStatement(sql);
 		ResultSet results = preparedStatement.executeQuery();
-		return DbUtils.resultSetToTableModel(results);
+		return buildTableModel(results);
 	}
 
+	private static DefaultTableModel buildTableModel(ResultSet rs) throws SQLException {
+	    ResultSetMetaData metaData = rs.getMetaData();
+	    Vector<String> columnNames = new Vector<String>();
+	    int columnCount = metaData.getColumnCount();
+	    for (int column = 1; column <= columnCount; column++) {
+	        columnNames.add(metaData.getColumnName(column));
+	    }
+	    Vector<Vector<Object>> data = new Vector<Vector<Object>>();
+	    while (rs.next()) {
+	        Vector<Object> vector = new Vector<Object>();
+	        for (int columnIndex = 1; columnIndex <= columnCount; columnIndex++) {
+	            vector.add(rs.getObject(columnIndex));
+	        }
+	        data.add(vector);
+	    }
+	    return new DefaultTableModel(data, columnNames);
+	}
 
 	public static String queryAsHTML(Connection connection, String query) throws SQLException{
 		PreparedStatement preparedStatement = null;
