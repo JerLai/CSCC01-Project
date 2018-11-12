@@ -7,7 +7,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import org.apache.poi.ss.usermodel.*;
 
@@ -75,40 +74,33 @@ public class DatabaseIO {
 				}
 			}
 
-			// iterate through 3rd row to get column headers
-			Iterator<Row> rowIterator = sheet.rowIterator();
-			Iterator<Row> rowIterator1 = sheet.rowIterator();
+			// iterate through 2nd row to get column headers
+			int r = 1;
+			int r1 = r;
 			Row row = null;
 			Row row1 = null;
 			Cell cell;
 			Cell cell1;
-			if (rowIterator.hasNext()) {
-				row = rowIterator.next();
-				row1 = rowIterator1.next();
+			if (r < sheet.getLastRowNum()) {
+				row = sheet.getRow(r);
+				r1++;
 			}
-			if (rowIterator.hasNext()) {
-				row = rowIterator.next();
-				row1 = rowIterator1.next();
+			if (r1 < sheet.getLastRowNum()) {
+				row1 = sheet.getRow(r1);
 			}
-			if (rowIterator1.hasNext()) {
-				row1 = rowIterator1.next();
-			}
-			Iterator<Cell> cellIterator = row.cellIterator();
-			Iterator<Cell> cellIterator1 = row1.cellIterator();
 			String notNull = " char(255) NOT NULL";
 			String type = " char(255)";
 			String typeUsed = null;
-			while (cellIterator.hasNext()) {
-                cell = cellIterator.next();
-                cell1 = cellIterator1.next();
-                // check if mandatory field
-                short fontIndex = cell1.getCellStyle().getFontIndex();
-                Font font = workbook.getFontAt(fontIndex);
-                short fontColor = font.getColor();
-                if (fontColor != IndexedColors.WHITE.index) {
-                	typeUsed = notNull;
-                } else {
+			Short fontIndex0 = row1.getCell(0).getCellStyle().getFontIndex();
+			for (int c = 0; c < row.getLastCellNum(); c++) {
+			    cell = row.getCell(c);
+			    cell1 = row1.getCell(c);
+			    // check if mandatory field
+                Short fontIndex = cell1.getCellStyle().getFontIndex();
+                if (fontIndex.compareTo(fontIndex0) == 0) {
                 	typeUsed = type;
+                } else {
+                	typeUsed = notNull;
                 }
                 // determine column headers from 3rd row
                 tableColData += ", ";
@@ -124,7 +116,7 @@ public class DatabaseIO {
 			try {
 				databaseAPI.createTable(connection, fileTable, tableColData);
 			} catch (Exception e) {
-				System.out.println("Error while creating table for file: " + fileName);
+				System.out.println("Error while inserting data for file: " + fileName);
 				e.printStackTrace();
 				return false;
 			}
@@ -132,23 +124,22 @@ public class DatabaseIO {
 			DataFormatter dataFormatter = new DataFormatter();
 			// iterate through each row
 			String rowValues;
-			while (rowIterator.hasNext()) {
-	            row = rowIterator.next();
-	            rowValues = "";
-	            // iterate through each cell in the row
-	            cellIterator = row.cellIterator();
-	            while (cellIterator.hasNext()) {
-	                cell = cellIterator.next();
-	                String cellValue = dataFormatter.formatCellValue(cell);
-	                String rowAdd = ", '" + cellValue + "'";
-	                if (cellValue.equals("")) {
-	                	rowAdd = ", " + null + "";
-	                }
-	                rowValues += rowAdd;
-	            }
-	            rowValues = rowValues.substring(2);
-	            // add into table
-	            try {
+			for (int r2 = r+1; r2 <= sheet.getLastRowNum(); r2++) {
+				row = sheet.getRow(r2);
+				rowValues = "";
+				// iterate through each cell in the row
+				for (int c1 = 0; c1 < row.getLastCellNum(); c1++) {
+					cell = row.getCell(c1);
+				    String cellValue = dataFormatter.formatCellValue(cell);
+				    if (cellValue.equals("")) {
+				    	rowValues += ", " + null + "";
+				    } else {
+				        rowValues += ", '" + cellValue + "'";
+				    }
+				}
+				rowValues = rowValues.substring(2);
+				// add into table
+				try {
 					databaseAPI.insertData(connection, fileTable, headers, rowValues);
 				} catch (Exception e) {
 					databaseAPI.deleteTable(connection, fileTable);
@@ -156,7 +147,7 @@ public class DatabaseIO {
 					e.printStackTrace();
 					return false;
 				}
-	        }
+			}
 		} catch (Exception e) {
 			System.out.println("Error while reading file: " + fileName);
 			e.printStackTrace();
