@@ -1,19 +1,13 @@
 package main.java.com.icare.database;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.util.ArrayList;
 
 import org.apache.poi.ss.usermodel.*;
 
 public class DatabaseIO {
-
-	private static final String DELIMITER = ",";
-	private static final String NEW_LINE_SEPARATOR = "\n";
 
 	public static boolean importData(Connection connection, File file) {
 		// get file name and decide table name
@@ -162,79 +156,5 @@ public class DatabaseIO {
 			}
 		}
 		return true;
-	}
-
-	public static void exportData(Connection connection, String fileName) {
-		String fileTable = fileName.substring(0, fileName.indexOf("."));
-		exportData(connection, fileName, fileTable);
-	}
-
-	public static void exportData(Connection connection, String fileName, String fileTable) {
-		FileWriter csvWriter = null;
-
-		try {
-			csvWriter = new FileWriter("resources/" + fileName);
-
-			ArrayList<String> tableCols = new ArrayList<String>();
-			// get columnData for table
-			try {
-				tableCols = (ArrayList<String>) databaseAPI.getTableColumnData(connection, fileTable);
-			} catch (Exception e) {
-				System.out.println("Error while checking table columns for .csv file: " + fileName);
-				e.printStackTrace();
-			}
-
-			// add column headers as first line in csv file
-			int i = 0;
-			for (String header : tableCols) {
-				if (i > 0) {
-					csvWriter.append(header.substring(0, header.indexOf(" ")));
-					if (i < (tableCols.size() - 1)) {
-						csvWriter.append(DELIMITER);
-					}
-				}
-				i++;
-			}
-			// add new line after column headers
-			csvWriter.append(NEW_LINE_SEPARATOR);
-
-			// get data from table
-			ArrayList<String> dataArray = new ArrayList<String>();
-			String sql = "SELECT * FROM " + fileTable;
-			PreparedStatement preparedStatement = connection.prepareStatement(sql);
-			ResultSet results = preparedStatement.executeQuery();
-			int numCols = results.getMetaData().getColumnCount();
-            while(results.next()) {
-                StringBuilder sb = new StringBuilder();
-                for (int m = 2; m <= numCols; m++) {
-                    sb.append(String.format(String.valueOf(results.getString(m))));
-                    if (m < numCols) {
-                    	sb.append(DELIMITER);
-                    }
-                }
-                dataArray.add(sb.toString());
-            }
-			preparedStatement.close();
-
-			// iterate through each row and write to file
-			int n = 0;
-			for (String row : dataArray) {
-	            csvWriter.write(row);
-	            n++;
-	            if (n < numCols - 1) {
-	            	csvWriter.write(NEW_LINE_SEPARATOR);
-	            }
-	        }
-		} catch (Exception e) {
-			System.out.println("Error while writing to .csv file: " + fileName);
-			e.printStackTrace();
-		} finally {
-			try {
-				csvWriter.close();
-			} catch (IOException e) {
-				System.out.println("Error while closing .csv file: " + fileName);
-				e.printStackTrace();
-			}
-		}
 	}
 }

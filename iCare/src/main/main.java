@@ -72,6 +72,10 @@ public class main {
 		// adding same named file again, following same db table changes as above for .xlsx files
 		//file = new File("resources/sample1.xls");
 		//DatabaseIO.importData(connection, file);
+		//try to expot sample1
+		//File file = DatabaseIO.exportData(connection, "sample1.xls");
+		//try to export iCare template
+		//file = DatabaseIO.exportData(connection, "iCARE_template.xlsx");
 		System.out.println("Finished");
 	}
 }
