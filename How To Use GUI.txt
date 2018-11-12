@@ -10,7 +10,7 @@
 - A runnable GUI program should pop up
 
 2. Logging In
-- What should be shown is a Login Page. There should already be a default username and password
+- What should be shown is a Login Page. There should already be a default username and password (Username: John, Password: password)
 - Click the "login" button, Login should be successful (in the event it isn't a Login Unsuccessful message should display)
 - Afterwards, what should be shown is a User Homepage with a list of Actions they can do (some not implemented for now)
 
