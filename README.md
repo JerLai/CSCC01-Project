@@ -20,3 +20,4 @@ Activity Log
 11/11/2018  Updated S4 Tasks doc to reflect moving of a Task from US3 to US6 (had been incorrectly included there). The Plan doc is updated accordingly (the actual plan didn't change, just moving that task to US6)
 11/11/2018  Added S4 Plan v3 to fix typo in v2.
 11/11/2018  us3 and us4 have been released. Written explanation of the GUI testing for us3 and us4 has been placed in deliverable4 folder (most tests can't be automated).
+11/12/2018  Merged s3 and s4 docs into 1 report doc (placed in deliverable4 folder inside deliverable_docs folder) as per D3 rubric comments.
