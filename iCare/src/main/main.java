@@ -1,6 +1,8 @@
 package main;
 
+import java.awt.Window.Type;
 import java.io.File;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import javax.swing.JButton;
@@ -8,6 +10,9 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+
+import org.apache.poi.EncryptedDocumentException;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 
 import main.java.com.icare.database.makeDatabase;
 import main.java.com.icare.gui.GUI;
@@ -53,10 +58,24 @@ public class main {
 		//databaseSession.createTempTable(connection, "Data2", querySource);
 		//System.out.println(String.format(databaseSession.queryData(connection, querySource)));
 		//System.out.println(String.format(databaseSession.queryData(connection, queryTemporary)));
+
+		// import testing
+		// adding .xlsx file for first time
+		//File file = new File("resources/iCARE_template.xlsx");
+		//DatabaseIO.importData(connection, file);
+		// adding same named file again, moves existing filename table data to filename_old table and "overwrites data"
+		//file = new File("resources/iCARE_template.xlsx");
+		//DatabaseIO.importData(connection, file);
+		// adding .xls file for first time
+		//file = new File("resources/sample1.xls");
+		//DatabaseIO.importData(connection, file);
+		// adding same named file again, following same db table changes as above for .xlsx files
+		//file = new File("resources/sample1.xls");
+		//DatabaseIO.importData(connection, file);
+		//try to expot sample1
+		//File file = DatabaseIO.exportData(connection, "sample1.xls");
+		//try to export iCare template
+		//file = DatabaseIO.exportData(connection, "iCARE_template.xlsx");
 		System.out.println("Finished");
 	}
-
-
-
-
 }

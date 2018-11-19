@@ -13,3 +13,11 @@ Activity Log
 10/29/2018  Added s2 report and burndown chart (provisional and actual). s3 planning to follow. Bit behind due to multiple midterms for each member.
 10/29/2018  Created product_backlog folder and moved v1/v2 of product backlog from deliverable2 folder for easier access by Instructors.
 10/30/2018  Added s3 planning docs. Focusing on completing and releasing us2/us3 by end of s3. Midterms, projects, etc slowing progress.
+11/05/2018  Released us2. Us3 almost complete. Added s3 report and burndown charts.
+11/07/2018  Completed planning for sprint4.
+11/08/2018  Code Review documented and pushed in deliverable4 folder. Video too large, working on solution.
+11/08/2018  Re-ordered US in Product Backlog as per discussion with Client (reasons detailed in Product_Backlog_3 in product_backlog folder). Planning for S4 adjusted accordingly.
+11/11/2018  Updated S4 Tasks doc to reflect moving of a Task from US3 to US6 (had been incorrectly included there). The Plan doc is updated accordingly (the actual plan didn't change, just moving that task to US6)
+11/11/2018  Added S4 Plan v3 to fix typo in v2.
+11/11/2018  us3 and us4 have been released. Written explanation of the GUI testing for us3 and us4 has been placed in deliverable4 folder (most tests can't be automated).
+11/12/2018  Merged s3 and s4 docs into 1 report doc (placed in deliverable4 folder inside deliverable_docs folder) as per D3 rubric comments.

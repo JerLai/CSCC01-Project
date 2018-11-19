@@ -82,7 +82,6 @@ public class databaseSession extends databaseAPI{
 	    return new DefaultTableModel(data, columnNames);
 	}
 
-
 	public static String queryAsHTML(Connection connection, String query) throws SQLException{
 		PreparedStatement preparedStatement = null;
 		ResultSet results = null;

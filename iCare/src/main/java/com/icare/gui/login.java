@@ -34,7 +34,7 @@ public class login extends JPanel{
 		gbc = parent.getGBC();
 		
 		JButton button = new JButton("Login");
-		JTextField username = new JTextField("Kyle");
+		JTextField username = new JTextField("John");
 		JTextField password = new JPasswordField("password");
 		JLabel login = new JLabel("Login");
 		login.setText("Login");

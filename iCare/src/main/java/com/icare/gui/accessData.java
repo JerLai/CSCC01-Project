@@ -153,10 +153,10 @@ public class accessData extends JPanel{
 			public void actionPerformed(ActionEvent e) {
 				chooser.addChoosableFileFilter(new FileNameExtensionFilter("xls", "xlsx"));
 				chooser.showOpenDialog(parent);
-				File file = chooser.getSelectedFile();
-				if (file != null){
-					DatabaseIO.importData(connection, file);
-				}
+				chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+				String path = chooser.getSelectedFile().getName();
+				if (path != null)
+					DatabaseIO.importData(connection, chooser.getSelectedFile());
 				try {
 					parent.next(new accessData(connection, userSession, parent));
 				} catch (SQLException e1) {
