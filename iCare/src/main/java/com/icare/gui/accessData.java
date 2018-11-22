@@ -7,6 +7,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -76,6 +78,7 @@ public class accessData extends JPanel{
 		submitQuery = new JButton("Query");
 		saveChanges = new JButton("Save Edits");
 		saveQuery = new JButton("Save Query");
+		saveQuery.setEnabled(false);
 		removeRow = new JButton("Delete Entry (Permanent)");
 		addRow = new JButton("Add Blank Entry");
 		importCsv = new JButton("Import");
@@ -117,6 +120,7 @@ public class accessData extends JPanel{
 		deleteQuery.setPreferredSize(defaultSize);
 		nameQueryLabel.setPreferredSize(defaultSize);
 
+
 		gbc.gridwidth = 4;
 		addElement(systemOut,1,0);
 		gbc.gridwidth = 3;
@@ -146,12 +150,14 @@ public class accessData extends JPanel{
 		saveChanges.addActionListener(new saveEditFunction());
 		saveQuery.addActionListener(new saveQueryFunction());
 		deleteQuery.addActionListener(new deleteQueryFunction());
+		queryInput.addKeyListener(new disableQuerySave());
 	}
 
 	private void setCurrentQueryActive(Boolean bool){
 		saveChanges.setEnabled(bool);
 		addRow.setEnabled(bool);
 		removeRow.setEnabled(bool);
+		saveQuery.setEnabled(bool);
 	}
 
 	private void save(JTable table) throws SQLException {
@@ -204,11 +210,11 @@ public class accessData extends JPanel{
 			table.setModel(databaseSession.queryJTable(connection, query));
 			currentTable = query.substring(query.indexOf("from")).split(" ")[1];
 			String pk = databaseSession.findPrimaryKey(connection, currentTable);
-			addRow.setEnabled(true);
+			setCurrentQueryActive(true);
 			if (databaseSession.primaryKeyInTable(pk, table)){
-				setCurrentQueryActive(true);
 				saveChanges.setText("Save changes to " + currentTable);
 			} else {
+				saveChanges.setEnabled(false);
 				saveChanges.setText("Cannot Save without Primary Key");
 			}
 			currentQuery = query;
@@ -278,12 +284,13 @@ public class accessData extends JPanel{
 			try {
 				if (listTables.getSelectedItem().toString().equals("Select Table")){
 					data.setModel(new DefaultTableModel());
-					queryInput.setText("" + listTables.getSelectedItem());
 					setCurrentQueryActive(false);
+					System.out.println("err");
 					return;
 				}
 				queryInput.setText("Select * from " + listTables.getSelectedItem());
 				updateTable(data, "Select * from " + listTables.getSelectedItem());
+				setCurrentQueryActive(true);
 				updateQueriesList();
 			} catch (SQLException e1) {
 				e1.printStackTrace();
@@ -300,8 +307,6 @@ public class accessData extends JPanel{
 		public void itemStateChanged(ItemEvent e) {
 			try {
 				if (listQueries.getSelectedItem().toString().equals("Select Query")){
-					queryInput.setText("" + listTables.getSelectedItem());
-					setCurrentQueryActive(false);
 					deleteQuery.setEnabled(false);
 					return;
 				}
@@ -394,7 +399,7 @@ public class accessData extends JPanel{
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			addRow.setEnabled(false);
+			setCurrentQueryActive(false);
 			try {
 				String query = queryInput.getText();
 				if (data.isEditing())
@@ -407,7 +412,7 @@ public class accessData extends JPanel{
 					return;
 				}
 				updateTable(data,query);
-
+				setCurrentQueryActive(true);
 			} catch (NullPointerException npe){
 				systemOut.setText("Sorry, I don't quite understand that query");
 			} catch (StringIndexOutOfBoundsException e1){
@@ -491,9 +496,29 @@ public class accessData extends JPanel{
 			} catch (SQLException e1) {
 				e1.printStackTrace();
 			}
-			
+
 		}
-		
+
+	}
+
+	class disableQuerySave implements KeyListener{
+
+		@Override
+		public void keyTyped(KeyEvent e) {
+			return;
+		}
+
+		@Override
+		public void keyPressed(KeyEvent e) {
+			saveQuery.setEnabled(false);
+
+		}
+
+		@Override
+		public void keyReleased(KeyEvent e) {
+			return;
+		}
+
 	}
 }
 

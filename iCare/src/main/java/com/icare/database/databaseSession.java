@@ -17,19 +17,9 @@ import javax.swing.table.TableModel;
 
 public class databaseSession extends databaseAPI{
 
-	public static String sourceQuery(String table, String attributes){
-		return "SELECT " + attributes + " FROM " + table + ";";
-	}
-
-	public static String sortQuery(String sourceQuery, String sortingCondition){
-		return sourceQuery.substring(0, sourceQuery.length() - 1) + " ORDER BY " + sortingCondition + ";";
-	}
-
-	public static String filterQuery(String sourceQuery, String filterCondition){
-		return sourceQuery.substring(0, sourceQuery.length() - 1) + " WHERE " + filterCondition + ";";
-	}
 
 	public static String queryData(Connection connection, String query) throws SQLException{
+		// for testing purposes this code is used to print out the data to see formatting and testing the back end
 		String sql = query;
 		PreparedStatement preparedStatement = connection.prepareStatement(sql);
 		ResultSet results = preparedStatement.executeQuery();
@@ -52,12 +42,14 @@ public class databaseSession extends databaseAPI{
 	}
 
 	public static TableModel queryTempJTable(Connection connection, String query) throws SQLException{
+		//Used for mock testing, although we must assume the back end is working, we can still use this to test commands
 		deleteTable(connection, "Scratch_Table");
 		createTempTable(connection, "Scratch_Table", query);
 		return queryJTable(connection, "SELECT * FROM Scratch_Table;");
 	}
 
 	public static TableModel queryJTable(Connection connection, String query) throws SQLException{
+		// returns the table model that can be used by JTables given by the sql query
 		String sql = query;
 		PreparedStatement preparedStatement = connection.prepareStatement(sql);
 		ResultSet results = preparedStatement.executeQuery();
@@ -65,6 +57,7 @@ public class databaseSession extends databaseAPI{
 	}
 
 	private static DefaultTableModel buildTableModel(ResultSet rs) throws SQLException {
+		// builds the table model from a query by converting the result set into 2D vectors
 	    ResultSetMetaData metaData = rs.getMetaData();
 	    Vector<String> columnNames = new Vector<String>();
 	    int columnCount = metaData.getColumnCount();
@@ -79,58 +72,27 @@ public class databaseSession extends databaseAPI{
 	        }
 	        data.add(vector);
 	    }
+	    // returns the table model of the vectors
 	    return new DefaultTableModel(data, columnNames);
 	}
 	
 	public static ArrayList<String> getAllSavedQueries(Connection connection) throws SQLException{
+		// returns a list of names for saved queries
 		ResultSet results = getData(connection, "name", "SavedQueries");
 		ArrayList<String> list = new ArrayList<String>();
 		while (results.next()){
-			// TODO remove
-			System.out.print("Hi");
-			System.out.println(results.getString(1));
 			list.add(results.getString("name"));
 		}
 		return list;
 	}
 
 	public static String getSavedQuery(Connection connection, String name) throws SQLException{
+		// returns the sql query saved under some given name
 		ResultSet results = getData(connection, "data", "SavedQueries", "name='" + name + "'");
 		if (results.next()){
 			return results.getString("data");
 		}
 		return null;
-	}
-	
-	public static String queryAsHTML(Connection connection, String query) throws SQLException{
-		PreparedStatement preparedStatement = null;
-		ResultSet results = null;
-		try {
-			String sql = query;
-			preparedStatement = connection.prepareStatement(sql);
-			results = preparedStatement.executeQuery();
-			ResultSetMetaData resultsData = results.getMetaData();
-			int columns = resultsData.getColumnCount();
-			String Output = "<html><table><tr>";
-			for (int i = 1; i <= columns; i++) {
-				Output += "<th>" + resultsData.getColumnName(i) + "</th>";
-			}
-			Output += "</tr>";
-			while (results.next()) {
-				Output += "<tr>";
-				for (int i = 1; i <= columns; i++) {
-					Output += "<td>" + results.getString(i) + "</td>";
-				}
-				Output += "</tr>";
-			}
-			Output += "</table></html>";
-			preparedStatement.close();
-			results.close();
-			return Output;
-		} finally {
-			preparedStatement.close();
-			results.close();
-		}
 	}
 
 	public static void createTempTable(Connection connection, String table, String sourceQuery) throws SQLException{
@@ -153,7 +115,7 @@ public class databaseSession extends databaseAPI{
 	}
 
 	public static String findPrimaryKey(Connection connection, String table) throws SQLException{
-		//String table = query.substring(query.indexOf("from")).split(" ")[1];
+		// returns the first (assumed only) primary key of a table
 		String sql = "pragma table_info(" + table + ");";
 		PreparedStatement preparedStatement = connection.prepareStatement(sql);
 		ResultSet results = preparedStatement.executeQuery();
@@ -169,6 +131,7 @@ public class databaseSession extends databaseAPI{
 	}
 
 	public static Boolean primaryKeyInTable(String pk, JTable table){
+		// return true if we find a primary key present
 		for (int c = 0 ; c < table.getColumnCount(); c++){
 			if (table.getColumnName(c).equals(pk))
 				return true;
@@ -177,6 +140,7 @@ public class databaseSession extends databaseAPI{
 	}
 
 	public static ArrayList<String> getAllColumnNames(Connection connection, String table) throws SQLException{
+		// returns a list of all column names from a table
 		ArrayList<String> columns = new ArrayList<String>();
 		String sql = "pragma table_info(" + table + ");";
 		PreparedStatement preparedStatement = connection.prepareStatement(sql);
