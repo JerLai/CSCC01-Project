@@ -81,7 +81,27 @@ public class databaseSession extends databaseAPI{
 	    }
 	    return new DefaultTableModel(data, columnNames);
 	}
+	
+	public static ArrayList<String> getAllSavedQueries(Connection connection) throws SQLException{
+		ResultSet results = getData(connection, "name", "SavedQueries");
+		ArrayList<String> list = new ArrayList<String>();
+		while (results.next()){
+			// TODO remove
+			System.out.print("Hi");
+			System.out.println(results.getString(1));
+			list.add(results.getString("name"));
+		}
+		return list;
+	}
 
+	public static String getSavedQuery(Connection connection, String name) throws SQLException{
+		ResultSet results = getData(connection, "data", "SavedQueries", "name='" + name + "'");
+		if (results.next()){
+			return results.getString("data");
+		}
+		return null;
+	}
+	
 	public static String queryAsHTML(Connection connection, String query) throws SQLException{
 		PreparedStatement preparedStatement = null;
 		ResultSet results = null;

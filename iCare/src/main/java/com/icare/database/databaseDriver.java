@@ -38,17 +38,17 @@ public class databaseDriver {
       
       String sql = "CREATE TABLE Login " 
               + "(ID INTEGER PRIMARY KEY NOT NULL," 
-              + "username char(64),"
-              + "password char(64),"
-              + "firstName char(64),"
-              + "lastName char(64),"
-              + "accountType char(64))";
+              + "username TEXT,"
+              + "password TEXT,"
+              + "firstName TEXT,"
+              + "lastName TEXT,"
+              + "accountType TEXT)";
       statement.executeUpdate(sql);
-      sql = "CREATE TABLE Data " 
+      sql = "CREATE TABLE SavedQueries " 
               + "(ID INTEGER PRIMARY KEY NOT NULL," 
-              + "sample1 char(255),"
-              + "sample2 char(255),"
-              + "sample3 char(255))";
+              + "name TEXT,"
+              + "description TEXT,"
+              + "query TEXT UNIQUE)";
       
       statement.executeUpdate(sql);
       statement.close();

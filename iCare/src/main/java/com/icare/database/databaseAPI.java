@@ -223,6 +223,20 @@ public class databaseAPI{
 	 * @param condition String csv of columnName*operands*value
 	 * @return resultsSet containing the results but must be closed when done using
 	 */
+	public static ResultSet getData(Connection connection, String select, String from) throws SQLException{
+		String sql = "SELECT " + select + " FROM " + from;
+		PreparedStatement preparedStatement = connection.prepareStatement(sql);
+		ResultSet results = preparedStatement.executeQuery();
+		return results;
+	}
+	
+	/**returns a resultset containing the data of a query structure
+	 * @param connection to database
+	 * @param select String column names csv
+	 * @param from String name of the table
+	 * @param condition String csv of columnName*operands*value
+	 * @return resultsSet containing the results but must be closed when done using
+	 */
 	public static ResultSet getData(Connection connection, String select, String from, String condition) throws SQLException{
 		String sql = "SELECT " + select + " FROM " + from +" WHERE " +condition;
 		PreparedStatement preparedStatement = connection.prepareStatement(sql);

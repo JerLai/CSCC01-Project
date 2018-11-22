@@ -38,7 +38,7 @@ public class GUI extends JFrame{
 		layout = new GridBagLayout();
 		container.setLayout(layout);
 		gbc = new GridBagConstraints();
-		defaultSize = new Dimension(window.width*1/6, window.height*1/25);
+		defaultSize = new Dimension(window.width*1/8, window.height*1/25);
 		gbc.insets = defaultInsets;
 		this.requestFocusInWindow();
 		setContentPane(new login(connection, this));
