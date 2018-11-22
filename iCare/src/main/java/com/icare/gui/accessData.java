@@ -285,7 +285,6 @@ public class accessData extends JPanel{
 				if (listTables.getSelectedItem().toString().equals("Select Table")){
 					data.setModel(new DefaultTableModel());
 					setCurrentQueryActive(false);
-					System.out.println("err");
 					return;
 				}
 				queryInput.setText("Select * from " + listTables.getSelectedItem());
@@ -450,7 +449,6 @@ public class accessData extends JPanel{
 					removeRow.setEnabled(true);
 					if (!editedRows.contains(r)){
 						editedRows.add(r);
-						System.out.println(values.substring(1));
 					}
 				}
 			}
