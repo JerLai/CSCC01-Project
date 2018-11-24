@@ -18,7 +18,9 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -45,6 +47,8 @@ public class accessData extends JPanel{
 	private Connection connection;
 	private JButton mainMenu, saveChanges, saveQuery, addRow, removeRow, submitQuery, importCsv, exportCsv, deleteQuery;
 	private JLabel systemOut, nameQueryLabel;
+	private JPopupMenu popupMenu;
+	private JMenuItem deleteItem;
 	private JComboBox<String> listTables, listQueries;
 	private JTextField queryInput, queryName;
 	private JFileChooser chooser;
@@ -151,6 +155,12 @@ public class accessData extends JPanel{
 		saveQuery.addActionListener(new saveQueryFunction());
 		deleteQuery.addActionListener(new deleteQueryFunction());
 		queryInput.addKeyListener(new disableQuerySave());
+
+		popupMenu = new JPopupMenu();
+		deleteItem = new JMenuItem("Delete");
+		deleteItem.addActionListener(new removeRowFunction());
+		popupMenu.add(deleteItem);
+		data.setComponentPopupMenu(popupMenu);
 	}
 
 	private void setCurrentQueryActive(Boolean bool){
@@ -168,21 +178,19 @@ public class accessData extends JPanel{
 		boolean isMandatory;
 		if (table.isEditing())
 			table.getCellEditor().stopCellEditing();
-		outerSave:
 			for(int r: editedRows){
 				updatedValues = "";
 				for (int c = 1; c < table.getColumnCount(); c++){
 					currentColumnType = databaseSession.getTableColumnType(connection, currentTable, table.getColumnName(c));
 					isMandatory = databaseSession.getTableColumnMandatory(connection, currentTable, table.getColumnName(c));
-					if (table.getValueAt(r, c) != null)
-						if (currentColumnType.indexOf("char")>=0 || currentColumnType.indexOf("TEXT")>=0)
+					if (table.getValueAt(r, c) != null){
+						if (currentColumnType.indexOf("char")>=0 || currentColumnType.indexOf("TEXT")>=0){
 							updatedValues += ", " + table.getColumnName(c) + "= '" + table.getValueAt(r, c) + "'";
-						else
+						}else
 							updatedValues += ", " + table.getColumnName(c) + "=" + table.getValueAt(r, c);
-					else if (isMandatory) {
-						systemOut.setText("Save Unsuccessful! Missing mandatory field at row: " + r + "\t column: " + table.getColumnName(c));
-						withoutError = false;
-						break outerSave;
+					}else if (isMandatory) {
+						systemOut.setText("Save Unsuccessful! Missing mandatory field at row: " + (r+1) + "\t column: " + table.getColumnName(c));
+						return;
 					}else
 						updatedValues += ", " + table.getColumnName(c) + "= null";
 				}
@@ -191,14 +199,13 @@ public class accessData extends JPanel{
 					condition = databaseSession.findPrimaryKey(connection, currentTable) + "=" + table.getValueAt(r, 0);
 					databaseSession.updateData(connection, currentTable, updatedValues, condition);
 				} catch (SQLException e) {
-					withoutError = false;
+					systemOut.setText("Save Unsuccessful	!");
 					e.printStackTrace();
+					return;
 				}
 
 			}
-		if (withoutError){
-			systemOut.setText("Save Successful!");
-		}
+		systemOut.setText("Save Successful!");
 	}
 
 	private void updateTable(JTable table, String query) throws SQLException{
@@ -311,9 +318,9 @@ public class accessData extends JPanel{
 				}
 				String query = databaseSession.getSavedQuery(connection, listQueries.getSelectedItem().toString());
 				queryInput.setText(query);
-				updateTable(data, query);
 				deleteQuery.setEnabled(true);
 				updateTablesList();
+				updateTable(data, query);
 			} catch (SQLException e1) {
 				e1.printStackTrace();
 			} catch (NullPointerException e2){

@@ -139,6 +139,21 @@ public class databaseSession extends databaseAPI{
 		return false;
 	}
 
+	public static ArrayList<String> getAllMandatoryColumnNames(Connection connection, String table) throws SQLException{
+		// returns a list of columns with NOT NULL in their schema
+		ArrayList<String> columns = new ArrayList<String>();
+		String sql = "pragma table_info(" + table + ");";
+		PreparedStatement preparedStatement = connection.prepareStatement(sql);
+		ResultSet results = preparedStatement.executeQuery();
+		while (results.next()) {
+			if (results.getString(4).equals("1")){
+				columns.add(results.getString(2));
+			}
+		}
+		results.close();
+		return columns;
+	}
+	
 	public static ArrayList<String> getAllColumnNames(Connection connection, String table) throws SQLException{
 		// returns a list of all column names from a table
 		ArrayList<String> columns = new ArrayList<String>();
