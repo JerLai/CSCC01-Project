@@ -151,7 +151,7 @@ public class DatabaseIO {
     return true;
   }
 
-  public static File exportData(Connection connection, String fileName) {
+  public static Workbook exportData(Connection connection, String fileName) {
     String fileTable = fileName.substring(0, fileName.indexOf("."));
     ArrayList<String> tableCols = new ArrayList<String>();
     // get columnData for table
@@ -245,21 +245,21 @@ public class DatabaseIO {
     }
 
 
-    // Write the output to a file
-    File file = new File(fileTable + ".xlsx");
-    try {
-      FileOutputStream fileOut = new FileOutputStream(file);
-      workbook.write(fileOut);
-      fileOut.close();
+//    // Write the output to a file
+//    File file = new File(fileTable + ".xlsx");
+//    try {
+//      FileOutputStream fileOut = new FileOutputStream(file);
+//      workbook.write(fileOut);
+//      fileOut.close();
+//
+//      // Closing the workbook
+//      workbook.close();
+//    } catch (IOException e) {
+//      System.out.println("Error while closing .xlsx file: " + fileName);
+//      e.printStackTrace();
+//    }
 
-      // Closing the workbook
-      workbook.close();
-    } catch (IOException e) {
-      System.out.println("Error while closing .xlsx file: " + fileName);
-      e.printStackTrace();
-    }
-
-    return file;
+    return workbook;
 
   }
 

@@ -89,7 +89,6 @@ public class DataUpload extends JPanel{
 					file = fileChooser.getSelectedFile();
 					JOptionPane.showMessageDialog(parent, "File is ready to be uploaded.", "File Primed", JOptionPane.PLAIN_MESSAGE);
 				}
-				//fileChooser.setSelectedFile(null);
 			}
 		});
 
