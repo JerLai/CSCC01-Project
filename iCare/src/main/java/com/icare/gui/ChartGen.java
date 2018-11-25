@@ -1,6 +1,7 @@
 package main.java.com.icare.gui;
 
 import java.sql.Connection;
+import java.util.HashMap;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -15,22 +16,21 @@ import main.java.com.icare.accounts.User;
 
 public class ChartGen {
 
-	public static ChartPanel barChartGen(Connection connection, User userSession, GUI parent) {
-		JFreeChart barChart = ChartFactory.createBarChart("Sample Chart", "Category", "Score", createBarDataset(),
+	public static ChartPanel barChartGen(CategoryDataset data) {
+		JFreeChart barChart = ChartFactory.createBarChart("Sample Chart", "Category", "Score", data,
 				PlotOrientation.VERTICAL, true, true, false);
 
 		ChartPanel chartPanel = new ChartPanel(barChart);
-		chartPanel.setPreferredSize(parent.getDefaultSize());
 		return chartPanel;
 	}
 
-	public static ChartPanel pieChartGen(Connection connection, User userSession, GUI parent) {
-		JFreeChart pieChart = ChartFactory.createPieChart("Mobile Sales", // chart title
-				createPieDataset(), // data
+	public static ChartPanel pieChartGen(DefaultPieDataset data) {
+		JFreeChart pieChart = ChartFactory.createPieChart("Sample Pie", // chart title
+				data, // data
 				true, // include legend
 				true, false);
 		ChartPanel chartPanel = new ChartPanel(pieChart);
-		chartPanel.setPreferredSize(parent.getDefaultSize());
+		//chartPanel.setPreferredSize(parent.getDefaultSize());
 		return chartPanel;
 	}
 
@@ -59,6 +59,23 @@ public class ChartGen {
 		dataset.addValue(3.0, ford, millage);
 		dataset.addValue(6.0, ford, safety);
 
+		return dataset;
+	}
+
+	public static CategoryDataset barDataConverter(HashMap<String, HashMap<String, Double>> data){
+		DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+		for (String mainCat :data.keySet()){
+			for (String subCat: data.get(mainCat).keySet()){
+				dataset.addValue(data.get(mainCat).get(subCat), subCat, mainCat);
+			}
+		}
+		return dataset;
+	}
+
+	public static DefaultPieDataset pieDataConverter(HashMap<String, Double> data){
+		DefaultPieDataset dataset = new DefaultPieDataset();
+		for (String key :data.keySet())
+			dataset.setValue(key, data.get(key));
 		return dataset;
 	}
 

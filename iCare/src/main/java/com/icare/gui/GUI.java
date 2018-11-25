@@ -19,7 +19,7 @@ public class GUI extends JFrame{
 	 */
 	private static final long serialVersionUID = 1L;
 	private Rectangle window;
-	private static final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+	private final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 	private Container container;
 	private LayoutManager layout;
 	private GridBagConstraints gbc;
