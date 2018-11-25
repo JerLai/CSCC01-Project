@@ -151,6 +151,11 @@ public class DatabaseIO {
     return true;
   }
 
+  /**export the require file
+   * @param connection to database
+   * @param String name of the file to be export
+   * @return Workbook Workbook contains the information of the file
+   */
   public static Workbook exportData(Connection connection, String fileName) {
     String fileTable = fileName.substring(0, fileName.indexOf("."));
     ArrayList<String> tableCols = new ArrayList<String>();
