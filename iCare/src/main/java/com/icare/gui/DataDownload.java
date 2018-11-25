@@ -21,6 +21,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -31,8 +32,7 @@ import main.java.com.icare.database.DatabaseIO;
 
 public class DataDownload extends JPanel {
 	private GridBagConstraints gbc;
-	private File file;
-
+	private Workbook workbook;
 	private JTextField fileName;
 	private static String OPEN = "Open";
 	private static String DOWNLOAD = "Download";
@@ -84,56 +84,42 @@ public class DataDownload extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				System.out.println(fileName.getText());
-				file = DatabaseIO.exportData(connection, fileName.getText());
+				workbook = DatabaseIO.exportData(connection, fileName.getText());
 			}
 		});
 
-		// Uploads currently set up file
+		// Downloads queued file to file system indicated by user
 		downloadFile.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (file == null) {
-					System.out.println("An error has occured while downloading the file.");
+				String fileAbsPath = "";
+				JFileChooser fileChooser = new JFileChooser();
+				fileChooser.addChoosableFileFilter(new ExcelFilter());
+				fileChooser.setAcceptAllFileFilterUsed(false);
+				fileChooser.setDialogTitle("Save file");
+				fileChooser.setSelectedFile(new File(fileAbsPath));
+				int returnVal = fileChooser.showSaveDialog(fileChooser);
+
+				if (returnVal == JFileChooser.APPROVE_OPTION) {
+					fileAbsPath = fileChooser.getSelectedFile().getAbsolutePath();
+				} else {
 					return;
 				}
-				else {
-					JFileChooser fileChooser = new JFileChooser();
-					fileChooser.addChoosableFileFilter(new ExcelFilter());
-					fileChooser.setAcceptAllFileFilterUsed(false);
-					fileChooser.setDialogTitle("Save file");
-					fileChooser.setSelectedFile(file);
-					int returnVal = fileChooser.showSaveDialog(fileChooser);
-					String fileAbsPath = "";
-					if (returnVal == JFileChooser.APPROVE_OPTION) {
-						fileAbsPath = fileChooser.getSelectedFile().getAbsolutePath();
-					} else {
-						return;
-					}
-					File file = new File(fileAbsPath);
-					if (file.exists() == false) {
-						XSSFWorkbook workbook = new XSSFWorkbook();
-			            XSSFSheet exampleSheet = workbook.createSheet("1");
-			            XSSFRow firstRow = exampleSheet.createRow(1);
-			            XSSFCell cell = firstRow.createCell(0);
-			            cell.setCellValue("value");
-
-			            try (
-			                    //Write the workbook in file system
-			                    FileOutputStream out = new FileOutputStream(file)) {
-			                workbook.write(out);
-			            } catch (FileNotFoundException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
-						} catch (IOException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
-						}
-					}
+				// System independent way to extract directory save path and to save actual file
+				File file = new File(fileAbsPath);
+				String retFileName = "/" + fileName.getText() + ".xlsx";
+				File retFile = new File(file, retFileName);
+				try {
+					FileOutputStream out = new FileOutputStream(retFile);
+					workbook.write(out);
+					out.close();
+					workbook.close();
+				} catch (IOException exception) {
+					System.out.println("Error while closing .xlsx file: " + fileName);
+					exception.printStackTrace();
 				}
-
 			}
-
 		});
 
 		// Returns to main menu
