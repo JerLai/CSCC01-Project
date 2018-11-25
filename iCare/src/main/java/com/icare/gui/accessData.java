@@ -133,8 +133,9 @@ public class accessData extends JPanel{
 		gbc.gridwidth = 4;addElement(systemOut,1,0);gbc.gridwidth = 1;
 		addElement(listTables, 0,2);		gbc.gridwidth = 3;addElement(queryInput,1,2);gbc.gridwidth = 1;
 		addElement(listQueries, 0,3);		addElement(importData,1,3);		addElement(submitQuery,2,3);	addElement(saveQuery, 3,3);
-		addElement(deleteQuery, 0, 4);		addElement(pieData,1,4);		addElement(barData,2,4);		addElement(saveChanges,3,4);
-		addElement(nameQueryLabel, 0, 5);	addElement(queryName, 1, 5);	addElement(addRow,2,5);			addElement(removeRow,3,5);
+		addElement(nameQueryLabel, 0, 4);	addElement(queryName, 1, 4);	addElement(addRow,2,4);			addElement(removeRow,3,4);
+		addElement(deleteQuery, 0, 5);		addElement(pieData,1,5);		addElement(barData,2,5);		addElement(saveChanges,3,5);
+
 
 		gbc.gridwidth = 5;
 		addElement(tableScroll,0,6);
