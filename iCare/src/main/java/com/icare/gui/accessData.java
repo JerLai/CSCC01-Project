@@ -174,7 +174,6 @@ public class accessData extends JPanel{
 		String updatedValues;
 		String condition;
 		String currentColumnType;
-		boolean withoutError = true;
 		boolean isMandatory;
 		if (table.isEditing())
 			table.getCellEditor().stopCellEditing();
@@ -183,22 +182,31 @@ public class accessData extends JPanel{
 				for (int c = 1; c < table.getColumnCount(); c++){
 					currentColumnType = databaseSession.getTableColumnType(connection, currentTable, table.getColumnName(c));
 					isMandatory = databaseSession.getTableColumnMandatory(connection, currentTable, table.getColumnName(c));
-					if (table.getValueAt(r, c) != null){
+					if (table.getValueAt(r, c) == null || table.getValueAt(r, c).equals("")){
+						// if null but field is mandatory, stop and alert user of error
+						if (isMandatory){
+							systemOut.setText("Save Unsuccessful! Missing mandatory field at row: " + (r+1) + "\t column: " + table.getColumnName(c));
+							return;
+						}
+						updatedValues += ", " + table.getColumnName(c) + "= null";
+					}
+					else {
 						if (currentColumnType.indexOf("char")>=0 || currentColumnType.indexOf("TEXT")>=0){
+							// text requires single quotes to avoid error
 							updatedValues += ", " + table.getColumnName(c) + "= '" + table.getValueAt(r, c) + "'";
 						}else
+							// whereas non textual data requires no single quotes to avoid error
 							updatedValues += ", " + table.getColumnName(c) + "=" + table.getValueAt(r, c);
-					}else if (isMandatory) {
-						systemOut.setText("Save Unsuccessful! Missing mandatory field at row: " + (r+1) + "\t column: " + table.getColumnName(c));
-						return;
-					}else
-						updatedValues += ", " + table.getColumnName(c) + "= null";
+					}						
 				}
 				updatedValues = updatedValues.substring(1);
 				try {
-					condition = databaseSession.findPrimaryKey(connection, currentTable) + "=" + table.getValueAt(r, 0);
+					// save and update table
+					int pkColumn = databaseSession.primaryKeyInTable(databaseSession.findPrimaryKey(connection, currentTable), table);
+					condition = databaseSession.findPrimaryKey(connection, currentTable) + "=" + table.getValueAt(r, pkColumn);
 					databaseSession.updateData(connection, currentTable, updatedValues, condition);
 				} catch (SQLException e) {
+					System.out.println(updatedValues);
 					systemOut.setText("Save Unsuccessful	!");
 					e.printStackTrace();
 					return;
@@ -218,7 +226,7 @@ public class accessData extends JPanel{
 			currentTable = query.substring(query.indexOf("from")).split(" ")[1];
 			String pk = databaseSession.findPrimaryKey(connection, currentTable);
 			setCurrentQueryActive(true);
-			if (databaseSession.primaryKeyInTable(pk, table)){
+			if (databaseSession.primaryKeyInTable(pk, table) >= 0){
 				saveChanges.setText("Save changes to " + currentTable);
 			} else {
 				saveChanges.setEnabled(false);

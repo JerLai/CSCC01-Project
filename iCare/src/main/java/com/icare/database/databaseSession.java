@@ -130,13 +130,13 @@ public class databaseSession extends databaseAPI{
 		return primaryKey;
 	}
 
-	public static Boolean primaryKeyInTable(String pk, JTable table){
-		// return true if we find a primary key present
+	public static int primaryKeyInTable(String pk, JTable table){
+		// returns the column in which Pk is found or -1 if not
 		for (int c = 0 ; c < table.getColumnCount(); c++){
 			if (table.getColumnName(c).equals(pk))
-				return true;
+				return c;
 		}
-		return false;
+		return -1;
 	}
 
 	public static ArrayList<String> getAllMandatoryColumnNames(Connection connection, String table) throws SQLException{
