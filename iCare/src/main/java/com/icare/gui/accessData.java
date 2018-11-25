@@ -39,9 +39,7 @@ import main.java.com.icare.database.databaseSession;
 
 public class accessData extends JPanel{
 
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 	private GridBagConstraints gbc;
 	private String currentTable, currentQuery;
@@ -62,6 +60,11 @@ public class accessData extends JPanel{
 	private User userSession;
 	private TableModel currentTableModel;
 
+	/** sets the JPanel onto the parent to view data in the database
+	 * @param connection the connection to the back end database
+	 * @param userSession the account User
+	 * @param parent the parent JFrame
+	 */	
 	public accessData(Connection connection, User userSession, GUI parent) throws SQLException{
 
 		this.parent = parent;
@@ -163,6 +166,10 @@ public class accessData extends JPanel{
 		setCurrentQueryActive(false);
 	}
 
+	
+	/** enables or disables certain features available to proper queries
+	 * @param bool true or false
+	 */	
 	private void setCurrentQueryActive(Boolean bool){
 		saveChanges.setEnabled(bool);
 		addRow.setEnabled(bool);
@@ -172,6 +179,9 @@ public class accessData extends JPanel{
 		pieData.setEnabled(bool);
 	}
 
+	/** Saves the table's data as is onto the database by overwriting edited columns/rows
+	 * @param table JTable containing the data to be saved
+	 */	
 	private void save(JTable table) throws SQLException {
 		String updatedValues;
 		String condition;
@@ -218,6 +228,9 @@ public class accessData extends JPanel{
 		systemOut.setText("Save Successful!");
 	}
 
+	/** Refreshes the table to display new data off of defined query
+	 * @param query in SQL lite format
+	 */	
 	private void updateTable(JTable table, String query) throws SQLException{
 		editedRows.clear();
 		systemOut.setText(null);
@@ -256,6 +269,11 @@ public class accessData extends JPanel{
 
 	}
 
+	/** Simplification of adding elements to JPanel
+	 * @param element JComponent to be added
+	 * @param x integer coordinate
+	 * @param y integer coordinate
+	 */	
 	private void addElement(JComponent element, int x, int y){
 		gbc.gridx = x;
 		gbc.gridy = y;
@@ -264,6 +282,9 @@ public class accessData extends JPanel{
 		repaint();
 	}
 
+	/** Refreshes the Table list
+	 * 
+	 */	
 	private void updateTablesList() throws SQLException{
 		listTables.removeAllItems();
 		listTables.addItem("Select Table");
@@ -273,6 +294,9 @@ public class accessData extends JPanel{
 		}
 	}
 
+	/** Refreshes the Queries list
+	 * 
+	 */	
 	private void updateQueriesList() throws SQLException{
 		listQueries.removeAllItems();
 		listQueries.addItem("Select Query");
@@ -281,6 +305,7 @@ public class accessData extends JPanel{
 		}
 	}
 
+	
 	class mainMenuFunction implements ActionListener{
 		@Override
 		public void actionPerformed(ActionEvent e) {
