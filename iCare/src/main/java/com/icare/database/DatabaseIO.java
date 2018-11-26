@@ -35,12 +35,9 @@ public class DatabaseIO {
 			ArrayList<String> tableExistCols = new ArrayList<String>();
 			// check if table exists
 			try {
-				tableExistCols = (ArrayList<String>) databaseAPI
-						.getTableColumnData(connection, fileTable);
+				tableExistCols = (ArrayList<String>) databaseAPI.getTableColumnData(connection, fileTable);
 			} catch (Exception e) {
-				System.out.println(fileTable);
-				System.out.println(
-						"Error while checking if table exists for file: " + fileName);
+				System.out.println("Error while checking if table exists for file: " + fileName);
 				e.printStackTrace();
 				return false;
 			}
@@ -48,11 +45,9 @@ public class DatabaseIO {
 			ArrayList<String> oldTableExistCols = new ArrayList<String>();
 			// delete .old table if exists and rename existing table to .old if needed
 			try {
-				oldTableExistCols = (ArrayList<String>) databaseAPI
-						.getTableColumnData(connection, fileTable + "_old");
+				oldTableExistCols = (ArrayList<String>) databaseAPI.getTableColumnData(connection, fileTable + "_old");
 			} catch (Exception e) {
-				System.out.println(
-						"Error while checking if _old table exists for file: " + fileName);
+				System.out.println("Error while checking if _old table exists for file: " + fileName);
 				e.printStackTrace();
 				return false;
 			}
@@ -60,8 +55,7 @@ public class DatabaseIO {
 				try {
 					databaseAPI.deleteTable(connection, fileTable + "_old");
 				} catch (Exception e) {
-					System.out
-					.println("Error while deleting _old table for file: " + fileName);
+					System.out.println("Error while deleting _old table for file: " + fileName);
 					e.printStackTrace();
 					return false;
 				}
@@ -71,9 +65,7 @@ public class DatabaseIO {
 					databaseAPI.deleteTable(connection, fileTable + "_old");
 					databaseAPI.renameTable(connection, fileTable, fileTable + "_old");
 				} catch (Exception e) {
-					System.out.println(fileTable);
-					System.out
-					.println("Error while saving _old table for file: " + fileName);
+					System.out.println("Error while saving _old table for file: " + fileName);
 					e.printStackTrace();
 					return false;
 				}
@@ -81,26 +73,46 @@ public class DatabaseIO {
 
 			// iterate through 2nd row to get column headers
 			int r = 1;
+			int r1 = r;
 			Row row = null;
+			Row row1 = null;
 			Cell cell;
+			Cell cell1;
 			if (r < sheet.getLastRowNum()) {
 				row = sheet.getRow(r);
+				r1++;
 			}
+			if (r1 < sheet.getLastRowNum()) {
+				row1 = sheet.getRow(r1);
+			}
+			String notNull = " TEXT NOT NULL DEFAULT 'not null'";
+			String type = " TEXT";
+			String typeUsed = null;
+			Short fontIndex0 = row1.getCell(0).getCellStyle().getFontIndex();
 			for (int c = 0; c < row.getLastCellNum(); c++) {
 				cell = row.getCell(c);
+				cell1 = row1.getCell(c);
+				// check if mandatory field
+				Short fontIndex = cell1.getCellStyle().getFontIndex();
+				if (fontIndex.compareTo(fontIndex0) == 0) {
+					typeUsed = type;
+				} else {
+					typeUsed = notNull;
+				}
 				// determine column headers from 3rd row
+				tableColData += ", ";
 				String cellValue = cell.getRichStringCellValue().getString();
-				tableColData += ", '" + cellValue + "' TEXT";
-				headers += "'" + cellValue;
-				headers += "', ";
+				tableColData += cellValue;
+				tableColData += typeUsed;
+				headers += cellValue;
+				headers += ", ";
 			}
-			headers = headers.substring(0, headers.length() - 2);
+			headers = headers.substring(0, headers.length()-2);
 
 			// create table with corresponding columns
 			try {
 				databaseAPI.createTable(connection, fileTable, tableColData);
 			} catch (Exception e) {
-				System.out.println(tableColData);
 				System.out.println("Error while inserting data for file: " + fileName);
 				e.printStackTrace();
 				return false;
@@ -109,8 +121,8 @@ public class DatabaseIO {
 			DataFormatter dataFormatter = new DataFormatter();
 			// iterate through each row
 			String rowValues;
-			for (int r1 = r + 1; r1 <= sheet.getLastRowNum(); r1++) {
-				row = sheet.getRow(r1);
+			for (int r2 = r+1; r2 <= sheet.getLastRowNum(); r2++) {
+				row = sheet.getRow(r2);
 				if (row == null)
 					break;
 				rowValues = "";
@@ -129,8 +141,8 @@ public class DatabaseIO {
 				try {
 					databaseAPI.insertData(connection, fileTable, headers, rowValues);
 				} catch (Exception e) {
-					System.out
-					.println("Error while inserting data for file: " + fileName);
+					databaseAPI.deleteTable(connection, fileTable);
+					System.out.println("Error while inserting data for file: " + fileName);
 					e.printStackTrace();
 					return false;
 				}
