@@ -12,9 +12,6 @@ import java.util.Vector;
 
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
-
-import main.java.com.icare.gui.accessData;
 
 
 public class databaseSession extends databaseAPI{

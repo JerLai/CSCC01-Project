@@ -1,12 +1,8 @@
 package main.java.com.icare.database;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 
 import javax.swing.table.TableModel;
@@ -15,8 +11,6 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class DatabaseIO {
-
-	private static final String DELIMITER = ";";
 
 	public static boolean importData(Connection connection, File file) {
 		// get file name and decide table name
