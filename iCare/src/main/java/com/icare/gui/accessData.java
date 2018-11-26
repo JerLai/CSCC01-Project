@@ -638,6 +638,7 @@ public class accessData extends JPanel{
 				workbook.write(out);
 				out.close();
 				workbook.close();
+				systemOut.setText("Export Successful");
 			} catch (IOException exception) {
 				System.out.println("Error while closing .xlsx file: " + exportName);
 				exception.printStackTrace();
