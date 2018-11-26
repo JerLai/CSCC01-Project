@@ -1,6 +1,8 @@
 # Team22
 Activity Log
 
+VIDEO LINK: https://drive.google.com/drive/folders/1M3TUlT6fIrYtF3G98O4VU0IMzCSNWvPv?usp=sharing
+
 9/30/2018	Added Team_Setup.pdf containing group agreements and details
 10/14/2018	Added product_backlog_0.pdf containing user stories and personas that reflect our conceptualized ideas on how the product will be used
 10/15/2018  Updated Team_Setup.pdf to reflect TA feedback
@@ -22,3 +24,5 @@ Activity Log
 11/11/2018  us3 and us4 have been released. Written explanation of the GUI testing for us3 and us4 has been placed in deliverable4 folder (most tests can't be automated).
 11/12/2018  Merged s3 and s4 docs into 1 report doc (placed in deliverable4 folder inside deliverable_docs folder) as per D3 rubric comments.
 11/18/2018  Released us5.
+11/25/2018  Released us6.
+11/26/2018  Making final changes to documentation, adding sprint/deliverable docs in appropriate folders (deliverable_docs).
