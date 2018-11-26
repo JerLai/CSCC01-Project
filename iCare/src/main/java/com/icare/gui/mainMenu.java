@@ -102,7 +102,7 @@ public class mainMenu extends JPanel{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				parent.next(new DataUpload(connection, userSession, parent));
+				parent.next(new DataDownload(connection, userSession, parent));
 			}
 			
 		});

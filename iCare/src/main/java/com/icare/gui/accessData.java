@@ -9,6 +9,9 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -32,6 +35,8 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
+import org.apache.poi.ss.usermodel.Workbook;
+
 import main.java.com.icare.accounts.User;
 import main.java.com.icare.database.DatabaseIO;
 import main.java.com.icare.database.databaseSession;
@@ -49,7 +54,7 @@ public class accessData extends JPanel{
 	private JButton mainMenu, saveChanges, saveQuery, addRow, removeRow, submitQuery, importData, pieData, barData, deleteQuery;
 	private JLabel systemOut, nameQueryLabel;
 	private JPopupMenu popupMenu;
-	private JMenuItem deleteItem;
+	private JMenuItem exportTable;
 	private JComboBox<String> listTables, listQueries;
 	private JTextField queryInput, queryName;
 	private JFileChooser chooser;
@@ -159,9 +164,9 @@ public class accessData extends JPanel{
 
 
 		popupMenu = new JPopupMenu();
-		deleteItem = new JMenuItem("Delete");
-		deleteItem.addActionListener(new removeRowFunction());
-		popupMenu.add(deleteItem);
+		exportTable = new JMenuItem("Export");
+		exportTable.addActionListener(new exportFunction());
+		popupMenu.add(exportTable);
 		data.setComponentPopupMenu(popupMenu);
 
 		setCurrentQueryActive(false);
@@ -605,6 +610,40 @@ public class accessData extends JPanel{
 				return;
 			}
 		}
+	}
+
+	class exportFunction implements ActionListener{
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			String fileAbsPath = "";
+			JFileChooser fileChooser = new JFileChooser();
+			fileChooser.addChoosableFileFilter(new ExcelFilter());
+			fileChooser.setAcceptAllFileFilterUsed(false);
+			fileChooser.setDialogTitle("Save file");
+			fileChooser.setSelectedFile(new File(fileAbsPath));
+			int returnVal = fileChooser.showSaveDialog(fileChooser);
+
+			if (returnVal == JFileChooser.APPROVE_OPTION) {
+				fileAbsPath = fileChooser.getSelectedFile().getAbsolutePath();
+			} else {
+				return;
+			}
+			// System independent way to extract directory save path and to save actual file
+			String exportName = fileChooser.getSelectedFile().getName().toString();
+			File retFile = new File(fileChooser.getSelectedFile().toString() + ".xlsx");
+			try {
+				Workbook workbook = DatabaseIO.exportData(currentTableModel, exportName);
+				FileOutputStream out = new FileOutputStream(retFile);
+				workbook.write(out);
+				out.close();
+				workbook.close();
+			} catch (IOException exception) {
+				System.out.println("Error while closing .xlsx file: " + exportName);
+				exception.printStackTrace();
+			}
+		}
+		
 	}
 
 }

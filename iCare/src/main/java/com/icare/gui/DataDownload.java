@@ -78,13 +78,18 @@ public class DataDownload extends JPanel {
 		mainMenu.setVisible(true);
 		// mainMenu.setActionCommand(MAINMENU);
 
+		
+		fileName.setPreferredSize(defaultSize);
+		fileName.setVisible(true);
+		
+		
 		// Searches for file in database
 		openFile.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				System.out.println(fileName.getText());
-				workbook = DatabaseIO.exportData(connection, fileName.getText());
+				//workbook = DatabaseIO.exportData(connection, fileName.getText());
 			}
 		});
 
@@ -134,6 +139,7 @@ public class DataDownload extends JPanel {
 
 			}
 		});
+		addElement(fileName,1,1);
 		addElement(openInstruction, 0, 0);
 		addElement(openFile, 0, 1);
 		addElement(downloadFile, 0, 2);
