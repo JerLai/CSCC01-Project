@@ -50,6 +50,7 @@ public class accessData extends JPanel{
 	private GridBagConstraints gbc;
 	private String currentTable;
 	private String currentQuery;
+	private String currentQueryName;
 	private int currentRow;
 	private ArrayList<Integer> editedRows = new ArrayList<Integer>();
 	private Connection connection;
@@ -304,6 +305,7 @@ public class accessData extends JPanel{
 				else
 					listTables.addItem(s);
 		}
+		listTables.setSelectedIndex(0);
 	}
 
 	/** Refreshes the Queries list
@@ -336,7 +338,7 @@ public class accessData extends JPanel{
 		@Override
 		public void itemStateChanged(ItemEvent e) {
 			try {
-				if (listTables.getSelectedIndex() == 0){
+				if (listTables.getSelectedIndex() <= 0){
 					return;
 				}
 				queryInput.setText("Select * from " + listTables.getSelectedItem());
@@ -357,10 +359,11 @@ public class accessData extends JPanel{
 		@Override
 		public void itemStateChanged(ItemEvent e) {
 			try {
-				if (listQueries.getSelectedIndex() == 0){
+				if (listQueries.getSelectedIndex() <= 0){
 					return;
 				}
-				String query = databaseSession.getSavedQuery(connection, listQueries.getSelectedItem().toString());
+				currentQueryName = listQueries.getSelectedItem().toString();
+				String query = databaseSession.getSavedQuery(connection, currentQueryName);
 				queryInput.setText(query);
 				deleteQuery.setEnabled(true);
 				updateTable(data, query);
@@ -538,7 +541,7 @@ public class accessData extends JPanel{
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			try {
-				databaseSession.removeData(connection, "SavedQueries", "name='" + listQueries.getSelectedItem().toString() + "'");
+				databaseSession.removeData(connection, "SavedQueries", "name='" + currentQueryName + "'");
 				updateQueriesList();
 			} catch (SQLException e1) {
 				e1.printStackTrace();
