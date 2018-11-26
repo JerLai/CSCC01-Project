@@ -1,10 +1,9 @@
 package main.java.com.icare.gui;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.HashMap;
+import java.sql.SQLException;
 import java.util.Map.Entry;
-
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -24,6 +23,24 @@ import org.jfree.data.xy.XYSeriesCollection;
  */
 public class ChartGen {
 
+
+	public static ChartPanel barChartGen(CategoryDataset data) {
+		JFreeChart barChart = ChartFactory.createBarChart("Sample Chart", "Category", "Score", data,
+				PlotOrientation.VERTICAL, true, true, false);
+
+		ChartPanel chartPanel = new ChartPanel(barChart);
+		return chartPanel;
+	}
+
+	public static ChartPanel pieChartGen(DefaultPieDataset data) {
+		JFreeChart pieChart = ChartFactory.createPieChart("Sample Pie", // chart title
+				data, // data
+				true, // include legend
+				true, false);
+		ChartPanel chartPanel = new ChartPanel(pieChart);
+		//chartPanel.setPreferredSize(parent.getDefaultSize());
+		return chartPanel;
+	}
 	//TODO: Add button to the ChartPanel to return to a menu?
 
 	/**
@@ -155,6 +172,25 @@ public class ChartGen {
 
 		return dataset;
 	}
+
+
+	public static CategoryDataset barDataConverter(HashMap<String, HashMap<String, Double>> data){
+		DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+		for (String mainCat :data.keySet()){
+			for (String subCat: data.get(mainCat).keySet()){
+				dataset.addValue(data.get(mainCat).get(subCat), subCat, mainCat);
+			}
+		}
+		return dataset;
+	}
+
+	public static DefaultPieDataset pieDataConverter(HashMap<String, Double> data){
+		DefaultPieDataset dataset = new DefaultPieDataset();
+		for (String key :data.keySet())
+			dataset.setValue(key, data.get(key));
+		return dataset;
+	}
+
 
 	/**
 	 * Generates the Dataset of values to be represented by a pie chart

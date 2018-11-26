@@ -12,11 +12,13 @@ import java.awt.event.KeyListener;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
@@ -28,6 +30,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 
 import main.java.com.icare.accounts.User;
 import main.java.com.icare.database.DatabaseIO;
@@ -36,16 +39,14 @@ import main.java.com.icare.database.databaseSession;
 
 public class accessData extends JPanel{
 
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 	private GridBagConstraints gbc;
 	private String currentTable, currentQuery;
 	private int currentRow;
 	private ArrayList<Integer> editedRows = new ArrayList<Integer>();
 	private Connection connection;
-	private JButton mainMenu, saveChanges, saveQuery, addRow, removeRow, submitQuery, importCsv, exportCsv, deleteQuery;
+	private JButton mainMenu, saveChanges, saveQuery, addRow, removeRow, submitQuery, importData, pieData, barData, deleteQuery;
 	private JLabel systemOut, nameQueryLabel;
 	private JPopupMenu popupMenu;
 	private JMenuItem deleteItem;
@@ -57,7 +58,13 @@ public class accessData extends JPanel{
 	private Dimension defaultSize;
 	private GUI parent;
 	private User userSession;
+	private TableModel currentTableModel;
 
+	/** sets the JPanel onto the parent to view data in the database
+	 * @param connection the connection to the back end database
+	 * @param userSession the account User
+	 * @param parent the parent JFrame
+	 */	
 	public accessData(Connection connection, User userSession, GUI parent) throws SQLException{
 
 		this.parent = parent;
@@ -82,19 +89,16 @@ public class accessData extends JPanel{
 		submitQuery = new JButton("Query");
 		saveChanges = new JButton("Save Edits");
 		saveQuery = new JButton("Save Query");
-		saveQuery.setEnabled(false);
 		removeRow = new JButton("Delete Entry (Permanent)");
 		addRow = new JButton("Add Blank Entry");
-		importCsv = new JButton("Import");
-		exportCsv = new JButton("Export");
+		importData = new JButton("Import");
+		pieData = new JButton("Pie Chart");
+		barData = new JButton("Bar Chart");
 		deleteQuery = new JButton("Delete Query");
-		deleteQuery.setEnabled(false);
 		chooser = new JFileChooser("Search csv");
 		systemOut = new JLabel();
-		nameQueryLabel = new JLabel("Query Name Below");
+		nameQueryLabel = new JLabel("Query Name :");
 
-		addRow.setEnabled(false);
-		removeRow.setEnabled(false);
 		listTables = new JComboBox<String>();
 		updateTablesList();
 		listQueries = new JComboBox<String>();
@@ -113,8 +117,9 @@ public class accessData extends JPanel{
 		removeRow.setPreferredSize(defaultSize);
 		listTables.setPreferredSize(defaultSize);
 		listQueries.setPreferredSize(defaultSize);
-		importCsv.setPreferredSize(defaultSize);
-		exportCsv.setPreferredSize(defaultSize);
+		importData.setPreferredSize(defaultSize);
+		pieData.setPreferredSize(defaultSize);
+		barData.setPreferredSize(defaultSize);
 		queryInput.setPreferredSize(new Dimension(defaultSize.width*3, defaultSize.height));
 		queryName.setPreferredSize(defaultSize);
 		submitQuery.setPreferredSize(defaultSize);
@@ -125,28 +130,22 @@ public class accessData extends JPanel{
 		nameQueryLabel.setPreferredSize(defaultSize);
 
 
-		gbc.gridwidth = 4;
-		addElement(systemOut,1,0);
-		gbc.gridwidth = 3;
-		addElement(queryInput,1,2);
-		gbc.gridwidth = 1;
-		addElement(nameQueryLabel, 4, 3);
-		addElement(listTables, 0,2);
-		addElement(listQueries, 0,3);
-		addElement(importCsv,1,3);
-		addElement(exportCsv,1,4);
-		addElement(submitQuery,2,3);
-		addElement(queryName, 4, 4);
-		addElement(saveQuery, 3,3);
-		addElement(deleteQuery, 0, 4);
-		addElement(saveChanges,3,4);
+		gbc.gridwidth = 4;addElement(systemOut,1,0);gbc.gridwidth = 1;
+		addElement(listTables, 0,2);		gbc.gridwidth = 3;addElement(queryInput,1,2);gbc.gridwidth = 1;
+		addElement(listQueries, 0,3);		addElement(importData,1,3);		addElement(submitQuery,2,3);	addElement(saveQuery, 3,3);
+		addElement(nameQueryLabel, 0, 4);	addElement(queryName, 1, 4);	addElement(addRow,2,4);			addElement(removeRow,3,4);
+		addElement(deleteQuery, 0, 5);		addElement(pieData,1,5);		addElement(barData,2,5);		addElement(saveChanges,3,5);
+
+
 		gbc.gridwidth = 5;
-		addElement(tableScroll,0,5);
+		addElement(tableScroll,0,6);
 		gbc.gridwidth = 1;
-		addElement(removeRow,2,6);
-		addElement(addRow,2,4);
-		exportCsv.setEnabled(false);
-		importCsv.addActionListener(new importFunction());
+
+
+
+
+
+		importData.addActionListener(new importFunction());
 		removeRow.addActionListener(new removeRowFunction());
 		addRow.addActionListener(new addRowFunction());
 		submitQuery.addActionListener(new submitQueryFunction());
@@ -155,21 +154,35 @@ public class accessData extends JPanel{
 		saveQuery.addActionListener(new saveQueryFunction());
 		deleteQuery.addActionListener(new deleteQueryFunction());
 		queryInput.addKeyListener(new disableQuerySave());
+		pieData.addActionListener(new pieChart());
+		barData.addActionListener(new barChart());
+
 
 		popupMenu = new JPopupMenu();
 		deleteItem = new JMenuItem("Delete");
 		deleteItem.addActionListener(new removeRowFunction());
 		popupMenu.add(deleteItem);
 		data.setComponentPopupMenu(popupMenu);
+
+		setCurrentQueryActive(false);
 	}
 
+	
+	/** enables or disables certain features available to proper queries
+	 * @param bool true or false
+	 */	
 	private void setCurrentQueryActive(Boolean bool){
 		saveChanges.setEnabled(bool);
 		addRow.setEnabled(bool);
 		removeRow.setEnabled(bool);
 		saveQuery.setEnabled(bool);
+		barData.setEnabled(bool);
+		pieData.setEnabled(bool);
 	}
 
+	/** Saves the table's data as is onto the database by overwriting edited columns/rows
+	 * @param table JTable containing the data to be saved
+	 */	
 	private void save(JTable table) throws SQLException {
 		String updatedValues;
 		String condition;
@@ -177,52 +190,55 @@ public class accessData extends JPanel{
 		boolean isMandatory;
 		if (table.isEditing())
 			table.getCellEditor().stopCellEditing();
-			for(int r: editedRows){
-				updatedValues = "";
-				for (int c = 1; c < table.getColumnCount(); c++){
-					currentColumnType = databaseSession.getTableColumnType(connection, currentTable, table.getColumnName(c));
-					isMandatory = databaseSession.getTableColumnMandatory(connection, currentTable, table.getColumnName(c));
-					if (table.getValueAt(r, c) == null || table.getValueAt(r, c).equals("")){
-						// if null but field is mandatory, stop and alert user of error
-						if (isMandatory){
-							systemOut.setText("Save Unsuccessful! Missing mandatory field at row: " + (r+1) + "\t column: " + table.getColumnName(c));
-							return;
-						}
-						updatedValues += ", " + table.getColumnName(c) + "= null";
+		for(int r: editedRows){
+			updatedValues = "";
+			for (int c = 1; c < table.getColumnCount(); c++){
+				currentColumnType = databaseSession.getTableColumnType(connection, currentTable, table.getColumnName(c));
+				isMandatory = databaseSession.getTableColumnMandatory(connection, currentTable, table.getColumnName(c));
+				if (table.getValueAt(r, c) == null || table.getValueAt(r, c).equals("")){
+					// if null but field is mandatory, stop and alert user of error
+					if (isMandatory){
+						systemOut.setText("Save Unsuccessful! Missing mandatory field at row: " + (r+1) + "\t column: " + table.getColumnName(c));
+						return;
 					}
-					else {
-						if (currentColumnType.indexOf("char")>=0 || currentColumnType.indexOf("TEXT")>=0){
-							// text requires single quotes to avoid error
-							updatedValues += ", " + table.getColumnName(c) + "= '" + table.getValueAt(r, c) + "'";
-						}else
-							// whereas non textual data requires no single quotes to avoid error
-							updatedValues += ", " + table.getColumnName(c) + "=" + table.getValueAt(r, c);
-					}						
+					updatedValues += ", " + table.getColumnName(c) + "= null";
 				}
-				updatedValues = updatedValues.substring(1);
-				try {
-					// save and update table
-					int pkColumn = databaseSession.primaryKeyInTable(databaseSession.findPrimaryKey(connection, currentTable), table);
-					condition = databaseSession.findPrimaryKey(connection, currentTable) + "=" + table.getValueAt(r, pkColumn);
-					databaseSession.updateData(connection, currentTable, updatedValues, condition);
-				} catch (SQLException e) {
-					System.out.println(updatedValues);
-					systemOut.setText("Save Unsuccessful	!");
-					e.printStackTrace();
-					return;
-				}
-
+				else {
+					if (currentColumnType.indexOf("char")>=0 || currentColumnType.indexOf("TEXT")>=0){
+						// text requires single quotes to avoid error
+						updatedValues += ", " + table.getColumnName(c) + "= '" + table.getValueAt(r, c) + "'";
+					}else
+						// whereas non textual data requires no single quotes to avoid error
+						updatedValues += ", " + table.getColumnName(c) + "=" + table.getValueAt(r, c);
+				}						
 			}
+			updatedValues = updatedValues.substring(1);
+			try {
+				// save and update table
+				int pkColumn = databaseSession.primaryKeyInTable(databaseSession.findPrimaryKey(connection, currentTable), table);
+				condition = databaseSession.findPrimaryKey(connection, currentTable) + "=" + table.getValueAt(r, pkColumn);
+				databaseSession.updateData(connection, currentTable, updatedValues, condition);
+			} catch (SQLException e) {
+				System.out.println(updatedValues);
+				systemOut.setText("Save Unsuccessful	!");
+				e.printStackTrace();
+				return;
+			}
+
+		}
 		systemOut.setText("Save Successful!");
 	}
 
+	/** Refreshes the table to display new data off of defined query
+	 * @param query in SQL lite format
+	 */	
 	private void updateTable(JTable table, String query) throws SQLException{
 		editedRows.clear();
 		systemOut.setText(null);
 		setCurrentQueryActive(false);
 		if (query != null && !query.isEmpty()){
-			table.setModel(databaseSession.queryJTable(connection, query));
-			table.setModel(databaseSession.queryJTable(connection, query));
+			currentTableModel = databaseSession.queryJTable(connection, query);
+			table.setModel(currentTableModel);
 			currentTable = query.substring(query.indexOf("from")).split(" ")[1];
 			String pk = databaseSession.findPrimaryKey(connection, currentTable);
 			setCurrentQueryActive(true);
@@ -254,6 +270,11 @@ public class accessData extends JPanel{
 
 	}
 
+	/** Simplification of adding elements to JPanel
+	 * @param element JComponent to be added
+	 * @param x integer coordinate
+	 * @param y integer coordinate
+	 */	
 	private void addElement(JComponent element, int x, int y){
 		gbc.gridx = x;
 		gbc.gridy = y;
@@ -262,6 +283,9 @@ public class accessData extends JPanel{
 		repaint();
 	}
 
+	/** Refreshes the Table list
+	 * 
+	 */	
 	private void updateTablesList() throws SQLException{
 		listTables.removeAllItems();
 		listTables.addItem("Select Table");
@@ -271,6 +295,9 @@ public class accessData extends JPanel{
 		}
 	}
 
+	/** Refreshes the Queries list
+	 * 
+	 */	
 	private void updateQueriesList() throws SQLException{
 		listQueries.removeAllItems();
 		listQueries.addItem("Select Query");
@@ -279,6 +306,7 @@ public class accessData extends JPanel{
 		}
 	}
 
+	
 	class mainMenuFunction implements ActionListener{
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -297,20 +325,18 @@ public class accessData extends JPanel{
 		@Override
 		public void itemStateChanged(ItemEvent e) {
 			try {
-				if (listTables.getSelectedItem().toString().equals("Select Table")){
-					data.setModel(new DefaultTableModel());
-					setCurrentQueryActive(false);
+				if (listTables.getSelectedIndex() == 0){
 					return;
 				}
 				queryInput.setText("Select * from " + listTables.getSelectedItem());
 				updateTable(data, "Select * from " + listTables.getSelectedItem());
 				setCurrentQueryActive(true);
-				updateQueriesList();
 			} catch (SQLException e1) {
 				e1.printStackTrace();
 			} catch (NullPointerException e2){
 				return;
 			}
+			listTables.setSelectedIndex(0);
 		}
 
 	}
@@ -320,20 +346,19 @@ public class accessData extends JPanel{
 		@Override
 		public void itemStateChanged(ItemEvent e) {
 			try {
-				if (listQueries.getSelectedItem().toString().equals("Select Query")){
-					deleteQuery.setEnabled(false);
+				if (listQueries.getSelectedIndex() == 0){
 					return;
 				}
 				String query = databaseSession.getSavedQuery(connection, listQueries.getSelectedItem().toString());
 				queryInput.setText(query);
 				deleteQuery.setEnabled(true);
-				updateTablesList();
 				updateTable(data, query);
 			} catch (SQLException e1) {
 				e1.printStackTrace();
 			} catch (NullPointerException e2){
 				return;
 			}
+			listQueries.setSelectedIndex(0);
 		}
 
 	}
@@ -427,13 +452,10 @@ public class accessData extends JPanel{
 				}
 				updateTable(data,query);
 				setCurrentQueryActive(true);
-			} catch (NullPointerException npe){
+			} catch (Exception e1){
 				systemOut.setText("Sorry, I don't quite understand that query");
-			} catch (StringIndexOutOfBoundsException e1){
-				systemOut.setText("Sorry, I don't quite understand that query");
-			}
-			catch (SQLException e2) {
-				systemOut.setText("Sorry, I don't quite understand that query");
+				data.setModel(new DefaultTableModel());
+				setCurrentQueryActive(false);
 			}
 		}
 	}
@@ -533,6 +555,58 @@ public class accessData extends JPanel{
 		}
 
 	}
+
+	class pieChart implements ActionListener{
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			JFrame chart = new JFrame();
+			try {
+				HashMap<String, Double> pieData = new HashMap<String, Double>();
+				for (int columnIndex = 0; columnIndex<currentTableModel.getColumnCount(); columnIndex++){
+					pieData.put(currentTableModel.getColumnName(columnIndex), new Double(currentTableModel.getValueAt(0, columnIndex).toString()));
+				}
+				chart.setContentPane(ChartGen.pieChartGen(ChartGen.pieDataConverter(pieData)));
+				chart.setVisible(true);
+				chart.setSize(new Dimension(defaultSize.width*5,defaultSize.height*25));
+				chart.setLocation(0, 0);
+			} catch (Exception e1){
+				return;
+			}
+		}
+
+	}
+
+	class barChart implements ActionListener{
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			JFrame chart = new JFrame();
+			try {
+				HashMap<String, HashMap<String, Double>> barData = new HashMap<String, HashMap<String, Double>>();
+				for (int columnIndex = 0; columnIndex<currentTableModel.getColumnCount(); columnIndex++){
+					HashMap<String, Double> subCat = new HashMap<String, Double>();
+					for (int rowIndex = 0; rowIndex<currentTableModel.getRowCount(); rowIndex++){
+						if (currentTableModel.getValueAt(rowIndex, columnIndex) == null)
+							continue;
+						String key = currentTableModel.getValueAt(rowIndex, columnIndex).toString();
+						if (!subCat.containsKey(key)){
+							subCat.put(key, new Double(1));
+						} else
+							subCat.put(key, subCat.get(key)+1);
+					}
+					barData.put(currentTableModel.getColumnName(columnIndex), subCat);
+				}
+				chart.setVisible(true);
+				chart.setSize(new Dimension(defaultSize.width*5,defaultSize.height*25));
+				chart.setLocation(0, 0);
+				chart.setContentPane(ChartGen.barChartGen(ChartGen.barDataConverter(barData)));
+			} catch (Exception e1){
+				return;
+			}
+		}
+	}
+
 }
 
 
