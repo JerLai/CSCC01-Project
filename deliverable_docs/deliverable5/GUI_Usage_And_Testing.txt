@@ -1,3 +1,6 @@
+*DISCLAMER*
+The README file contains a link to the demo video for this Team's project. It is more or less a video representation of the instructions and features explained here
+
 1. Logging In
 - What should be shown is a Login Page. There should already be a default username and password (username is John, password is password)
 - Click the "login" button, Login should be successful (in the event it isn't a Login Unsuccessful message should display)
