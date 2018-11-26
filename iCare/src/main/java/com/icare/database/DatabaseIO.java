@@ -12,6 +12,12 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class DatabaseIO {
 
+	/**
+	 * Imports data from Excel file and stores in db
+	 * @param connection the connection to store data via
+	 * @param file the file to get data from
+	 * @return true/false depending on import success
+	 */
 	public static boolean importData(Connection connection, File file) {
 		// get file name and decide table name
 		String fileName = file.getName();

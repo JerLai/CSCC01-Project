@@ -26,7 +26,11 @@ public class GUI extends JFrame{
 	private Insets defaultInsets = new Insets(10,10,10,10);
 	private Dimension defaultSize;
 
-
+	/**
+	 * Starts up GUI panel with connection
+	 * @param header header for GUI
+	 * @param connection the connection to db
+	 */
 	public GUI(String header, Connection connection){
 		super(header);
 		this.setSize(screenSize.width*3/4, screenSize.height*3/4);
@@ -44,18 +48,33 @@ public class GUI extends JFrame{
 		setContentPane(new login(connection, this));
 	}
 
+	/**
+	 * Gets default size of GUI
+	 * @return default size of GUI
+	 */
 	public Dimension getDefaultSize(){
 		return defaultSize;
 	}
-	
+
+	/**
+	 * Gets GridBagConstraints
+	 * @return GBC of GUI panel
+	 */
 	public GridBagConstraints getGBC(){
 		return this.gbc;
 	}
-	
+
+	/**
+	 * Gets LayoutManager of GUI
+	 */
 	public LayoutManager getLayout(){
 		return this.layout;
 	}
-	
+
+	/**
+	 * Gets the next GUI panel
+	 * @param panel next GUI panel
+	 */
 	protected void next(JPanel panel){
 		setContentPane(panel);
 		validate();

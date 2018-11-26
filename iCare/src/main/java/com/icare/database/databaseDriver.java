@@ -9,6 +9,10 @@ import java.sql.Statement;
 
 public class databaseDriver {
 
+  /**
+   * Connects to SQL db
+   * @return the connection
+   */
   protected static Connection connectDataBase() {
     Connection connection = null;
     try {
@@ -22,6 +26,11 @@ public class databaseDriver {
     return connection;
   }
 
+  /**
+   * Initializes the connection with SQL database
+   * @param connection the connection to be initialized
+   * @return the initialized connection
+   */
   protected static Connection initialize(Connection connection) {
     if (!initializeDatabase(connection)) {
       System.out.println("Error connecting to new DB");
@@ -30,6 +39,11 @@ public class databaseDriver {
   }
   
 
+  /**
+   * Initialize the db
+   * @param connection the connection to which db is connected
+   * @return true/false depending on db initialization success
+   */
   private static boolean initializeDatabase(Connection connection) {
     Statement statement = null;
     
@@ -59,6 +73,4 @@ public class databaseDriver {
     }
     return false;
   }
-  
-  
 }

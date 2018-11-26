@@ -17,6 +17,13 @@ import javax.swing.table.DefaultTableModel;
 public class databaseSession extends databaseAPI{
 
 
+	/**
+	 * Query data via the connection provided.
+	 * @param connection the connection to SQL db
+	 * @param query the query to be performed on db
+	 * @return the queried data
+	 * @throws SQLException
+	 */
 	public static String queryData(Connection connection, String query) throws SQLException{
 		// for testing purposes this code is used to print out the data to see formatting and testing the back end
 		String sql = query;
@@ -40,6 +47,13 @@ public class databaseSession extends databaseAPI{
 		return Output;
 	}
 
+	/**
+	 * Query data into Temporary JTable
+	 * @param connection the connection to db
+	 * @param query the query to be performed
+	 * @return ResultSet of query performed
+	 * @throws SQLException
+	 */
 	public static ResultSet queryTempJTable(Connection connection, String query) throws SQLException{
 		//Used for mock testing, although we must assume the back end is working, we can still use this to test commands
 		deleteTable(connection, "Scratch_Table");
@@ -47,6 +61,13 @@ public class databaseSession extends databaseAPI{
 		return queryJTable(connection, "SELECT * FROM Scratch_Table;");
 	}
 
+	/**
+	 * Query data into JTable
+	 * @param connection the connection to db
+	 * @param query the query to be performed
+	 * @return ResultSet of query performed
+	 * @throws SQLException
+	 */
 	public static ResultSet queryJTable(Connection connection, String query) throws SQLException{
 		// returns the table model that can be used by JTables given by the sql query
 		String sql = query;
@@ -55,6 +76,12 @@ public class databaseSession extends databaseAPI{
 		return results;
 	}
 
+	/**
+	 * Build TableModel based on given ResultSet
+	 * @param rs the ResultSet to build TableModel of
+	 * @return the constructed TableModel
+	 * @throws SQLException
+	 */
 	public static DefaultTableModel buildTableModel(ResultSet rs) throws SQLException {
 		// builds the table model from a query by converting the result set into 2D vectors
 	    ResultSetMetaData metaData = rs.getMetaData();
@@ -74,7 +101,13 @@ public class databaseSession extends databaseAPI{
 	    // returns the table model of the vectors
 	    return new DefaultTableModel(data, columnNames);
 	}
-	
+
+	/**
+	 * Gets all saved queries within db.
+	 * @param connection the connection to db
+	 * @return array of queries
+	 * @throws SQLException
+	 */
 	public static ArrayList<String> getAllSavedQueries(Connection connection) throws SQLException{
 		// returns a list of names for saved queries
 		ResultSet results = getData(connection, "name", "SavedQueries");
@@ -85,6 +118,13 @@ public class databaseSession extends databaseAPI{
 		return list;
 	}
 
+	/**
+	 * Get a saved query by name.
+	 * @param connection the connection to the db
+	 * @param name the saved query's name
+	 * @return the query
+	 * @throws SQLException
+	 */
 	public static String getSavedQuery(Connection connection, String name) throws SQLException{
 		// returns the sql query saved under some given name
 		ResultSet results = getData(connection, "data", "SavedQueries", "name='" + name + "'");
@@ -94,6 +134,13 @@ public class databaseSession extends databaseAPI{
 		return null;
 	}
 
+	/**
+	 * Create Temporary Table based on a query on a table
+	 * @param connection the connection to db
+	 * @param table the table to perform query on
+	 * @param sourceQuery the query to be performed
+	 * @throws SQLException
+	 */
 	public static void createTempTable(Connection connection, String table, String sourceQuery) throws SQLException{
 		String sql = "CREATE TEMPORARY TABLE IF NOT EXISTS '" + table + "' AS " + sourceQuery +";";
 		Statement Statement = connection.createStatement();
@@ -101,6 +148,12 @@ public class databaseSession extends databaseAPI{
 		Statement.close();
 	}
 
+	/**
+	 * Gets all Tables in db
+	 * @param connection the connection to db
+	 * @return array of all table names
+	 * @throws SQLException
+	 */
 	public static ArrayList<String> getAllTables(Connection connection) throws SQLException{
 		ArrayList<String> tableNames = new ArrayList<String>();
 		DatabaseMetaData tables = connection.getMetaData();
@@ -113,6 +166,13 @@ public class databaseSession extends databaseAPI{
 
 	}
 
+	/**
+	 * Find primary key of table
+	 * @param connection the connection to db
+	 * @param table the table for which to find primary key
+	 * @return the primary key
+	 * @throws SQLException
+	 */
 	public static String findPrimaryKey(Connection connection, String table) throws SQLException{
 		// returns the first (assumed only) primary key of a table
 		String sql = "pragma table_info('" + table + "');";
@@ -129,6 +189,12 @@ public class databaseSession extends databaseAPI{
 		return primaryKey;
 	}
 
+	/**
+	 * Return if primary key in given table
+	 * @param pk the primary key
+	 * @param table the table
+	 * @return column where primary key is found or -1 otherwise
+	 */
 	public static int primaryKeyInTable(String pk, JTable table){
 		// returns the column in which Pk is found or -1 if not
 		for (int c = 0 ; c < table.getColumnCount(); c++){
@@ -138,6 +204,13 @@ public class databaseSession extends databaseAPI{
 		return -1;
 	}
 
+	/**
+	 * Gets all mandatory column names for table
+	 * @param connection the connection to db
+	 * @param table the table to find mandatory columns
+	 * @return array of the mandatory column names
+	 * @throws SQLException
+	 */
 	public static ArrayList<String> getAllMandatoryColumnNames(Connection connection, String table) throws SQLException{
 		// returns a list of columns with NOT NULL in their schema
 		ArrayList<String> columns = new ArrayList<String>();
@@ -152,7 +225,14 @@ public class databaseSession extends databaseAPI{
 		results.close();
 		return columns;
 	}
-	
+
+	/**
+	 * Gets all column names in given table
+	 * @param connection the connection to db
+	 * @param table the table to find columns
+	 * @return array of column names
+	 * @throws SQLException
+	 */
 	public static ArrayList<String> getAllColumnNames(Connection connection, String table) throws SQLException{
 		// returns a list of all column names from a table
 		ArrayList<String> columns = new ArrayList<String>();

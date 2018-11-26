@@ -26,7 +26,12 @@ public class login extends JPanel{
 	 */
 	private static final long serialVersionUID = 1L;
 	private GridBagConstraints gbc;
-	
+
+	/**
+	 * Sets up Login GUI panel
+	 * @param connection the connection to db
+	 * @param parent the parent GUI panel
+	 */
 	public login(Connection connection, GUI parent){
 
 		this.setLayout(parent.getLayout());
@@ -102,6 +107,12 @@ public class login extends JPanel{
 	}
 
 
+	/**
+	 * Adds element to GUI panel
+	 * @param element the element to be added
+	 * @param x x-coordinate
+	 * @param y y-coordinate
+	 */
 	private void addElement(JComponent element, int x, int y){
 		gbc.gridx = x;
 		gbc.gridy = y;

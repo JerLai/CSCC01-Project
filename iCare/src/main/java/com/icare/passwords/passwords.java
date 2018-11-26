@@ -4,6 +4,11 @@ import java.security.MessageDigest;
 
 public class passwords {
 
+  /**
+   * Returns hashed password
+   * @param password the password to be hashed
+   * @return the hashed password
+   */
   public static String passwordHash(String password) {
     MessageDigest md;
     try {
@@ -15,7 +20,13 @@ public class passwords {
       return null;
     }
   }
-  
+
+  /**
+   * Compares hashed/unhashed password
+   * @param hashed hashed password
+   * @param unhashed unhashed password
+   * @return true/false based on comparison
+   */
   public static boolean comparePassword(String hashed, String unhashed) {
     return hashed.equals(passwordHash(unhashed));
   }

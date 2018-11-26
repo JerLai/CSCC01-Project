@@ -23,12 +23,14 @@ public class UserTest {
 
 	@BeforeAll
 	static void initUserFactory () {
+		// create UserFactory
 		usfac = new UserFactory();
 	}
 
 	@Test
 	@DisplayName("AdminUser")
 	void testUserAdmin () {
+		// test creation of Admin User
 		admin = usfac.getUser("admin", "why", "hi", 3, "admin");
 		assertEquals(admin.getClass(), Admin.class);
 	}
@@ -36,6 +38,7 @@ public class UserTest {
 	@Test
 	@DisplayName("ReceptionistUser")
 	void testUserReceptionist () {
+		// test creation of Receptionist User
 		recep = usfac.getUser("recep", "lol", "haha", 1, "receptionist");
 		assertEquals(recep.getClass(), Receptionist.class);
 	}
@@ -43,6 +46,7 @@ public class UserTest {
 	@Test
 	@DisplayName("SettlementWorkerUser")
 	void testUserSettlementWorker () {
+		// test creation of SettlementWorker User
 		settle = usfac.getUser("settle", "lol2", "haha2", 2, "settlementWorker");
 		assertEquals(settle.getClass(), SettlementWorker.class);
 	}
@@ -50,6 +54,7 @@ public class UserTest {
 	@Test
 	@DisplayName("ServiceProviderUser")
 	void testUserServiceProvider () {
+		// test creation of ServiceProvider User
 		serv = usfac.getUser("serv", "lol3", "haha3", 4, "serviceProvider");
 		assertEquals(serv.getClass(), ServiceProvider.class);
 	}
@@ -57,6 +62,7 @@ public class UserTest {
 	@Test
 	@DisplayName("ConstructorUsername")
 	void testUserConstructorUsername () {
+		// test username initialization
 		admin = usfac.getUser("admin", "why", "hi", 3, "admin");
 		assertEquals("admin", admin.username);
 	}
@@ -64,6 +70,7 @@ public class UserTest {
 	@Test
 	@DisplayName("ConstructorFirstName")
 	void testUserConstructorFirstName () {
+		// test first name initialization
 		admin = usfac.getUser("admin", "why", "hi", 3, "admin");
 		assertEquals("why", admin.firstName);
 	}
@@ -71,6 +78,7 @@ public class UserTest {
 	@Test
 	@DisplayName("ConstructorLastName")
 	void testUserConstructorLastName () {
+		// test last name initialization
 		admin = usfac.getUser("admin", "why", "hi", 3, "admin");
 		assertEquals("hi", admin.lastName);
 	}
@@ -78,6 +86,7 @@ public class UserTest {
 	@Test
 	@DisplayName("ConstructorID")
 	void testUserConstructorID () {
+		// test ID initialization
 		admin = usfac.getUser("admin", "why", "hi", 3, "admin");
 		assertEquals(3, admin.ID);
 	}
@@ -85,6 +94,7 @@ public class UserTest {
 	@Test
 	@DisplayName("UsernameSetter")
 	void testUserUsernameSetter () {
+		// test username setter
 		admin = usfac.getUser("admin", "why", "hi", 3, "admin");
 		admin.setUsername("olleh");
 		assertEquals("olleh", admin.username);
@@ -93,6 +103,7 @@ public class UserTest {
 	@Test
 	@DisplayName("UsernameGetter")
 	void testUserUsernameGetter () {
+		// test username getter
 		admin = usfac.getUser("admin", "why", "hi", 3, "admin");
 		assertEquals("admin", admin.getUsername());
 	}
@@ -100,6 +111,7 @@ public class UserTest {
 	@Test
 	@DisplayName("FirstNameSetter")
 	void testUserFirstNameSetter () {
+		// test first name setter
 		admin = usfac.getUser("admin", "why", "hi", 3, "admin");
 		admin.setFirstName("yhw");
 		assertEquals("yhw", admin.firstName);
@@ -108,6 +120,7 @@ public class UserTest {
 	@Test
 	@DisplayName("FirstNameGetter")
 	void testUserFirstNameGetter () {
+		// test first name getter
 		admin = usfac.getUser("admin", "why", "hi", 3, "admin");
 		assertEquals("why", admin.getFirstName());
 	}
@@ -115,6 +128,7 @@ public class UserTest {
 	@Test
 	@DisplayName("LastNameSetter")
 	void testUserLastNameSetter () {
+		// test last name setter
 		admin = usfac.getUser("admin", "why", "hi", 3, "admin");
 		admin.setLastName("ih");
 		assertEquals("ih", admin.lastName);
@@ -123,6 +137,7 @@ public class UserTest {
 	@Test
 	@DisplayName("LastNameGetter")
 	void testUserLastNameGetter () {
+		// test last name getter
 		admin = usfac.getUser("admin", "why", "hi", 3, "admin");
 		assertEquals("hi", admin.getLastName());
 	}
@@ -130,6 +145,7 @@ public class UserTest {
 	@Test
 	@DisplayName("IDGetter")
 	void testUserIDGetter () {
+		// test ID getter
 		admin = usfac.getUser("admin", "why", "hi", 3, "admin");
 		assertEquals(3, admin.getID());
 	}

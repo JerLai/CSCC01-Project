@@ -9,6 +9,9 @@ import java.sql.SQLException;
 public class makeDatabase {
  
 
+  /**
+   * Initialize the database.
+   */
   public static void initialize() {
     
     Connection connection = databaseDriver.connectDataBase();

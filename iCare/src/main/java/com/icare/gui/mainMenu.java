@@ -73,28 +73,15 @@ public class mainMenu extends JPanel{
 
 		});
 		addPatient.setEnabled(false);
-//		addPatient.addActionListener(new ActionListener(){
-//
-//			@Override
-//			public void actionPerformed(ActionEvent e) {
-//				addPatientData(userSession);
-//			}
-//
-//		});
 		admin.setEnabled(false);
-//		admin.addActionListener(new ActionListener(){
-//
-//			@Override
-//			public void actionPerformed(ActionEvent e) {
-//				admin(userSession);
-//			}
-//
-//		});
-
 	}
 
-
-	
+	/**
+	 * Adds element to GUI panel
+	 * @param element the element to be added
+	 * @param x x-coordinate
+	 * @param y y-coordinate
+	 */
 	private void addElement(JComponent element, int x, int y){
 		gbc.gridx = x;
 		gbc.gridy = y;
