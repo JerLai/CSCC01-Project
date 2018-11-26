@@ -26,3 +26,14 @@ VIDEO LINK: https://drive.google.com/drive/folders/1M3TUlT6fIrYtF3G98O4VU0IMzCSN
 11/18/2018  Released us5.
 11/25/2018  Released us6.
 11/26/2018  Making final changes to documentation, adding sprint/deliverable docs in appropriate folders (deliverable_docs).
+
+Project Build Instructions:
+- Clone the Team22 repository with the required git commands "git clone <repo link>"
+- Open up Eclipse and make sure you are checked out into the master branch
+- In Eclipse, make sure your Workspace is "Team22"
+- In Eclipse, click "File" -> "New" -> "Java Project"
+- Name the Java Project "iCare"
+- Because the iCare folder already exists in Team22, your entire project should be instantiated
+- In the Package Explorer of Eclipse, the Project Folder 'iCare" should show up, just in case, right click and refresh to make sure it has all the files
+- Click the run button (green play button) on the upper tools bar
+- A runnable GUI program should pop up

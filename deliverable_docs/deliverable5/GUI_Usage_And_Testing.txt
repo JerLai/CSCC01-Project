@@ -1,0 +1,130 @@
+1. Logging In
+- What should be shown is a Login Page. There should already be a default username and password (username is John, password is password)
+- Click the "login" button, Login should be successful (in the event it isn't a Login Unsuccessful message should display)
+- Afterwards, what should be shown is a User Homepage with a list of Actions they can do (some not implemented for now)
+
+2.1 Logging Out
+- Returns you back to the Login Page
+
+2.2 View Tables
+- View data should allow the user to view and edit data
+- Select Table is a drop down menu, any imported tables should be displayed when selected
+- A sql query input text field should function, it is also populated by clicking the drop down menus for predefined queries and the query button can be used to execute
+- Importing data can be done by clicking import, navigating and selecting the system file with .xlsx extension.
+- Queries that are performed can be named and saved to the query dropdown menu as well as removed if the options to save/delete are used. (Available upon querying a valid table)
+- Adding, deleting and saving to valid queries is also possible via valid query and the add/delete entry buttons while editing data can be done by clicking the cells of the table and manually input. (Remember to click save, which is only allowed if an unmodifiable primary key is present)
+- Exporting the tables can be done by right clicking the table content and clicking export, which will allow the user to choose a system file name and destination to save to
+- Pie Chart and Bar Chart options displays popup graphs of the displayed data, although Bar Chart works with most queries, Pie Chart only works with specific queries, and can be demonstrated by clicking on Report A on saved queries before attempting to generate a pie chart. 
+- When saving edits, if an attribute is marked as mandatory during import the fields cannot be saved when empty as well as having the user be promted the first location of this violation. Newly added rows will also display place holder values
+
+2.3 Import Data
+- Originally intended to be a separate feature, this was integrated into the view tables feature due to excessive navigation
+
+2.3.1 DB Browser for SQLite
+- Install this software from https://sqlitebrowser.org/ and download the installer or code for whichever OS you are using
+- This is a visual tool that enables you to view, create, design and edit database files compatibile with SQLite
+
+2.3.2 Resources and Database
+- Under the Team22 folder there is a folder called iCare. Enter this folder and there is a file called iCare.db, this is the database file
+- Under the same iCare folder there is a folder called resources, in this folder exists 4 files, iCARE_template.xlsx, sample1.xls, sample1.xlsx, sample2.xlsx
+
+2.3.3 Using DB Browser for SQLite
+- First make sure the database file is a clean one. Open up DB Browser and click on Open Database
+- Locate the database file specified above
+- Here will be a database of all stored data, in the clean one there should only be one table of data, "Login" which is the table of all registered Users
+- The only one in here should be the default username and password that we used to log in, a User of "John" and Password of "password"
+- In the Browser Data tab, you can view the data for all Tables as an easy to access visual table
+
+2.3.4 GUI of Import/Upload Data
+- In View Tables, there should be 3 buttons and a Drop-down menu
+- Import: Allows you to select a file on your file system to upload to the database for storage
+- Query: queries data onto the database
+- Main Menu: returns back to the User Homepage
+- Drop-down menu: allows you to select tables located inside the database
+
+2.3.5 Using the exporting data
+- Using any of the following in View Tables: Selecting table, querying table manually via query text field+query button, or selecting a saved query, ensure a data table is valid and displayed
+- Right click the table and click export
+- A file system navigator shall appear, name the file and choose the location in your system, then click save
+- Open native system explorer to confirm the file is exported as shown in the table
+
+2.3.6 Test Cases for Import Functionality
+- Follow the instructions in 3.3.5 and navigate to "iCARE_template.xlsx", the template given by the Client which has empty values, non-empty values, several rows and columns
+	- Click on "iCARE_template.xlsx", File should be ready for upload
+	- Click "Open", this one may take a while as the template is a huge file with many rows and columns
+	- You should recieve a popup stating that the import was unsuccessful, this is because mandatory fields within this template (marked by the orange text color) were missing values
+	- This is not allowed, so import was stopped
+	- Check this using DB Browser for SQLite, go to the Browse Data tab and click on the refresh button, there will be no iCare_template table, since the table was not fully imported, it was deleted when mandatory fields were found to be missing
+- Follow the instructions in 3.3.5 and navigate to "sample1.xls", a test file with no missing data
+	- Click on "sample1.xls", File should be ready for upload
+	- Click "Open", File should have been properly stored onto database
+	- Check this using DB Browser for SQLite, now that data has been uploaded, go to the Browse Data tab and click on the refresh button
+	- There should now be a table called "sample1" that can be selected in the Table Drop-down menu or visible in Database Structure tab
+	- The data should match that of the original Excel file
+- Follow the instructions in 3.3.5 and navigate to "sample1.xls" again
+	- Click on "sample1.xls", File should be ready for upload
+	- Click "Open", File should have been properly stored onto database
+	- Check this using DB Browser for SQLite, now that data has been uploaded, go to the Browse Data tab and click on the refresh button
+	- There should now be a table called "sample1" and a table called "sample1_old" that can be selected in the Table Drop-down menu or visible in Database Structure tab
+	- The "sample1_old" table should hold the same data as the "sample1" table, the _old tables are for saving the n-1 copy of templates uploaded
+	- The data should match that of the original Excel file
+- Follow the instructions in 3.3.5 and navigate to "sample1.xlsx", same contents as sample1.xls but using the newer .xlsx format for Excel
+	- Click on "sample1.xlsx", File should be ready for upload
+	- Click "Open", File should have been properly stored onto database
+	- Check this using DB Browser for SQLite, now that data has been uploaded, go to the Browse Data tab and click on the refresh button
+	- There should now be a table called "sample1_old" that can be selected in the Table Drop-down menu or visible in Database Structure tab
+	- This file, with the same name as "sample1.xls" will result in the following (like above case)
+	- sample1 now is a table with the data from the latest upload, and sample1_old is the old table before the upload
+- Follow the instructions in 3.3.5 and navigate to "sample2.xlsx", missing some values in some rows or coumns
+	- Click on "sample2.xlsx", File should be ready for upload
+	- Click "Open", File should have been properly stored onto database
+	- Check this using DB Browser for SQLite, now that data has been uploaded, go to the Browse Data tab and click on the refresh button
+	- There should now be a table called "sample2" that can be selected in the Table Drop-down menu or visible in Database Structure tab
+	- In the Browser Data tab in DB Browser, for the fields that were missing values (note they are not in mandatory fields), the value of "not null" should have been inserted
+	
+2.3.7 Testing Queries and Sample Data
+- Testing queries, please refer to this link for a more detailed and comprehensive instructions: https://www.sqlite.org/lang.html
+- In a future release, queries with syntax similar to those of online catalogues (such as as Amazon where you simply type what you want) may be implemented; this is a proof of concept for now
+- For the sake of testing, we have provided sample "dummy" data in similar vein to the iCare albeit with more simple data filled in
+- Test: Using the Import Button, import a file called "Client_Profile_Bulk_Template.xlsx" located in resources, now when you click the drop-down menu for "select table", that file should now be in the database
+	- Select that table from View Tables via dropdown menu of Select Table. Here is a list of things you can do to manipulate the data in the table:
+		- Replace the asterisk (*) symbol with a subset comma separated column names then hit the query button. The subset of fields should be listed.
+		- For example: try "Select ID,client_birth_dt from Client_Profile_Bulk_Template", the resulting table should just be the columns with values under ID and client_birth_dt
+		- Try adding a "where" clause at the end and specifying fields such as "Select * from [tablename] where ID<5", click query and validate the table can filter row entries.
+		- Try "Select Count(ID) from [tablename] where [ID>3]" and validate that a number exist under column countID reflects the number of entries past the 3rd entry.
+		- You may also try to use SQL injection, which is using other keywords besides "select" such as "drop table", "update table", etc (refer to above link)
+		- Test that you can save a valid query (a predefined Report A can be used to open a Pie Chart) Try to replicate that query by modifying the sample query.
+		- For example: with the query given from before "Select_ID, client_birth_dt from Client_Profile_Bulk_Template" using the text field on the right of "Query Name:", you can name this particular query to what you want
+		- Afterwards click the "Save Query" button, now when you select the "Select Query" drop-down menu, a new query should now appear that is called whatever you named it
+		- You can do this with any valid query for a given table, make sure if you are getting a subset of the fields that the field exists in the table
+		- Test that you can remove a valid query, for example the new query that you added, select it from "Select Query" and click the "Delete Query" button, it should now be gone from the menu
+
+2.3.8 Chart Generation
+- Currently only two types of charts are supported, bar charts and pie charts
+- The implementation currently allows generating a bar chart of any given table, albeit not one useable for reports as no specific filters have been made for it
+- A pie chart is delicate: it can only be generated after a specific query has been made as well as it is preferrable that a pie chart is made from numerical values
+- If one were to select a table and click on the "Pie Chart" button, no chart will pop-up
+- In future releases: more sophisticated parsing and filtering of data to generate reports will and can be implemented
+
+2.3.9 Chart Testing
+- Test bar chart: Any table can be converted to a bar chart, though no obvious report is generated with an unfiltered table
+- Test pie chart: Select the "test" table from the "Select Table" drop-down menu
+	- A Table with the column heads of ID, int, fl, str should appear with values underneath
+	- As a table is essentially a 2-D array, pie chart can not parse the data
+	- Thus: use a query, a pre-set query in "Select Query" called "Report A" is provided
+	- Click "Pie Chart", a new window should now pop-up titled "Sample Pie" with a chart generated based on the query
+
+2.3.10 Exporting Tables
+- Export allows the ability to export imported files/data as well as the ability to export new tables generated from queries from other tables
+- Exporting is achieved by right clicking on the table, clicking the "Export" button that pops up and choosing where to save the file in your file system
+- Test export: in the "Select Table" drop-down menu, once again select the "Client_Profile_Bulk_Template.xlsx"
+	- The table should once again show, right click and an "Export" button should now pop up
+	- Like most other file navigators, you should have the ability to navigate your file system
+	- Select somewhere in your file system to save the file to, and name it any desired name
+	- Click "Save" and now the file should be located where you decided to save it
+	- Result: Open the file where you saved it, the contents of the file should match that of what is displayed in the Table in the program
+
+2.4 Admin and Add Patient
+- Was originally planned to include a more sophisticated account system of different uses, each with varying levels of access to data and action permissions
+- Admin was to switch to an Admin account which more or less had system level access to the program, currently unimplemented but planned for future release
+- Add Patient was to allow the ability to fill out forms with the software itself and save to the database aside from importing data from an excel file
