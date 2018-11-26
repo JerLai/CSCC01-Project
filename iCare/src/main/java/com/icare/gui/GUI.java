@@ -19,7 +19,7 @@ public class GUI extends JFrame{
 	 */
 	private static final long serialVersionUID = 1L;
 	private Rectangle window;
-	private static final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+	private final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 	private Container container;
 	private LayoutManager layout;
 	private GridBagConstraints gbc;
@@ -38,7 +38,7 @@ public class GUI extends JFrame{
 		layout = new GridBagLayout();
 		container.setLayout(layout);
 		gbc = new GridBagConstraints();
-		defaultSize = new Dimension(window.width*1/6, window.height*1/25);
+		defaultSize = new Dimension(window.width*1/8, window.height*1/25);
 		gbc.insets = defaultInsets;
 		this.requestFocusInWindow();
 		setContentPane(new login(connection, this));

@@ -38,7 +38,6 @@ public class mainMenu extends JPanel{
 		JButton viewTable = new JButton("View Tables");
 		JButton admin = new JButton("Admin");
 		JButton addPatient = new JButton("Add Patient");
-		JButton uploadData = new JButton("Upload Data");
 
 
 		// Set all the elements to default JComponent size and add to Panel
@@ -47,13 +46,11 @@ public class mainMenu extends JPanel{
 		viewTable.setPreferredSize(defaultSize);
 		admin.setPreferredSize(defaultSize);
 		addPatient.setPreferredSize(defaultSize);
-		uploadData.setPreferredSize(defaultSize);
 		addElement(welcome,0,0);
 		addElement(logout, 0,1);
 		addElement(viewTable,0,2);
 		addElement(admin,0,3);
 		addElement(addPatient,0,4);
-		addElement(uploadData, 0, 5);
 		repaint();
 		logout.addActionListener(new ActionListener(){
 			@Override
@@ -94,15 +91,6 @@ public class mainMenu extends JPanel{
 //
 //		});
 
-		uploadData.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-				parent.next(new DataUpload(connection, userSession, parent));
-			}
-			
-		});
 	}
 
 

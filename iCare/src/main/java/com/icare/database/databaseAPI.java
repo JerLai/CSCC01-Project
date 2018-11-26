@@ -20,7 +20,7 @@ public class databaseAPI{
 	 * @param condition String of condition met to remove ie "ID=5"
 	 */
 	public static boolean removeData(Connection connection, String table, String condition) throws SQLException{
-		String sql = "DELETE FROM " + table + " WHERE " + condition + ";";
+		String sql = "DELETE FROM '" + table + "' WHERE " + condition + ";";
 		PreparedStatement preparedStatement = connection.prepareStatement(sql);
 		return preparedStatement.execute();
 	}
@@ -37,7 +37,7 @@ public class databaseAPI{
 				return;
 			}
 		}
-		String sql = "ALTER TABLE " + table + " ADD COLUMN " + name + " " + type + ";";
+		String sql = "ALTER TABLE '" + table + "' ADD COLUMN " + name + " " + type + ";";
 		PreparedStatement preparedStatement = connection.prepareStatement(sql);
 		preparedStatement.execute();
 		preparedStatement.close();
@@ -48,7 +48,7 @@ public class databaseAPI{
 	 * @param table String name of the table
 	 */
 	public static void deleteTable(Connection connection, String table) throws SQLException{
-		String sql = "DROP TABLE IF EXISTS " + table + ";"; 
+		String sql = "DROP TABLE IF EXISTS '" + table + "';"; 
 		Statement Statement = connection.createStatement();
 		Statement.executeUpdate(sql);
 		Statement.close();
@@ -61,7 +61,7 @@ public class databaseAPI{
 	public static void createTable(Connection connection, String table, String columnData) throws SQLException{
 		if (!columnData.contains("PRIMARY KEY"))
 			columnData = "ID INTEGER PRIMARY KEY NOT NULL" + columnData;
-		String sql = "CREATE TABLE IF NOT EXISTS " + table + "(" + columnData + ");"; 
+		String sql = "CREATE TABLE IF NOT EXISTS '" + table + "'(" + columnData + ");"; 
 		Statement Statement = connection.createStatement();
 		Statement.executeUpdate(sql);
 		Statement.close();
@@ -73,7 +73,7 @@ public class databaseAPI{
 	 * @param newName String name of the table which it will now take on
 	 */
 	public static void renameTable(Connection connection, String table, String newName) throws SQLException{
-		String sql = "ALTER TABLE " + table + " RENAME TO " + newName + ";";
+		String sql = "ALTER TABLE '" + table + "' RENAME TO '" + newName + "';";
 		PreparedStatement preparedStatement = connection.prepareStatement(sql);
 		preparedStatement.execute();
 		preparedStatement.close();
@@ -107,7 +107,7 @@ public class databaseAPI{
 	 * @param condition String condition isolating which rows to edit ie "ID=5"
 	 */
 	public static void updateData(Connection connection, String table, String columnToValue, String condition) throws SQLException{
-		String sql = "UPDATE " + table + " SET " + columnToValue + " WHERE " + condition + ";";
+		String sql = "UPDATE '" + table + "' SET " + columnToValue + " WHERE " + condition + ";";
 		PreparedStatement preparedStatement = connection.prepareStatement(sql);
 		preparedStatement.executeUpdate();
 		preparedStatement.close();
@@ -118,7 +118,7 @@ public class databaseAPI{
 	 * @param table String name of the table
 	 */
 	public static void insertData(Connection connection, String destination) throws SQLException{
-		String sql = "INSERT INTO " + destination + " DEFAULT VALUES;";
+		String sql = "INSERT INTO '" + destination + "' DEFAULT VALUES;";
 		PreparedStatement preparedStatement = connection.prepareStatement(sql);
 		preparedStatement.execute();
 		preparedStatement.close();
@@ -131,7 +131,7 @@ public class databaseAPI{
 	 * @param values String csv of corresponding entries for column in attributes
 	 */
 	public static void insertData(Connection connection, String destination, String attributes, String values) throws SQLException{
-		String sql = "INSERT INTO " + destination + "(" + attributes + ")" + " VALUES(" + values + ");";
+		String sql = "INSERT INTO '" + destination + "'(" + attributes + ")" + " VALUES(" + values + ");";
 		PreparedStatement preparedStatement = connection.prepareStatement(sql);
 		preparedStatement.execute();
 		preparedStatement.close();
@@ -223,8 +223,22 @@ public class databaseAPI{
 	 * @param condition String csv of columnName*operands*value
 	 * @return resultsSet containing the results but must be closed when done using
 	 */
+	public static ResultSet getData(Connection connection, String select, String from) throws SQLException{
+		String sql = "SELECT " + select + " FROM '" + from + "'";
+		PreparedStatement preparedStatement = connection.prepareStatement(sql);
+		ResultSet results = preparedStatement.executeQuery();
+		return results;
+	}
+	
+	/**returns a resultset containing the data of a query structure
+	 * @param connection to database
+	 * @param select String column names csv
+	 * @param from String name of the table
+	 * @param condition String csv of columnName*operands*value
+	 * @return resultsSet containing the results but must be closed when done using
+	 */
 	public static ResultSet getData(Connection connection, String select, String from, String condition) throws SQLException{
-		String sql = "SELECT " + select + " FROM " + from +" WHERE " +condition;
+		String sql = "SELECT " + select + " FROM '" + from +"' WHERE " +condition;
 		PreparedStatement preparedStatement = connection.prepareStatement(sql);
 		ResultSet results = preparedStatement.executeQuery();
 		return results;
@@ -259,7 +273,7 @@ public class databaseAPI{
 	 * @return String name of the column type
 	 */
 	public static String getTableColumnType(Connection connection, String table, String columnName) throws SQLException{
-		String sql = "pragma table_info(" + table + ");";
+		String sql = "pragma table_info('" + table + "');";
 		PreparedStatement preparedStatement = connection.prepareStatement(sql);
 		ResultSet results = preparedStatement.executeQuery();
 		String columnData = null;
@@ -280,7 +294,7 @@ public class databaseAPI{
 	 * @return boolean true if the column cannot be set null, false otherwise
 	 */
 	public static boolean getTableColumnMandatory(Connection connection, String table, String columnName) throws SQLException{
-		String sql = "pragma table_info(" + table + ");";
+		String sql = "pragma table_info('" + table + "');";
 		PreparedStatement preparedStatement = connection.prepareStatement(sql);
 		ResultSet results = preparedStatement.executeQuery();
 		boolean isMandatory = false;
@@ -301,7 +315,7 @@ public class databaseAPI{
 	 */
 	public static List<String> getTableColumnData(Connection connection, String table) throws SQLException {
 		ArrayList<String> columns = new ArrayList<String>();
-		String sql = "pragma table_info(" + table + ");";
+		String sql = "pragma table_info('" + table + "');";
 		PreparedStatement preparedStatement = connection.prepareStatement(sql);
 		ResultSet results = preparedStatement.executeQuery();
 		String columnData;
