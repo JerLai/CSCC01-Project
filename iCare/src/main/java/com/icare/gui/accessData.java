@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -47,7 +48,8 @@ public class accessData extends JPanel{
 
 	private static final long serialVersionUID = 1L;
 	private GridBagConstraints gbc;
-	private String currentTable, currentQuery;
+	private String currentTable;
+	private String currentQuery;
 	private int currentRow;
 	private ArrayList<Integer> editedRows = new ArrayList<Integer>();
 	private Connection connection;
@@ -172,7 +174,7 @@ public class accessData extends JPanel{
 		setCurrentQueryActive(false);
 	}
 
-	
+
 	/** enables or disables certain features available to proper queries
 	 * @param bool true or false
 	 */	
@@ -242,9 +244,10 @@ public class accessData extends JPanel{
 		systemOut.setText(null);
 		setCurrentQueryActive(false);
 		if (query != null && !query.isEmpty()){
-			currentTableModel = databaseSession.queryJTable(connection, query);
+			ResultSet result = databaseSession.queryJTable(connection, query);
+			currentTable = result.getMetaData().getTableName(1);
+			currentTableModel = databaseSession.buildTableModel(result);
 			table.setModel(currentTableModel);
-			currentTable = query.substring(query.indexOf("from")).split(" ")[1];
 			String pk = databaseSession.findPrimaryKey(connection, currentTable);
 			setCurrentQueryActive(true);
 			if (databaseSession.primaryKeyInTable(pk, table) >= 0){
@@ -296,7 +299,10 @@ public class accessData extends JPanel{
 		listTables.addItem("Select Table");
 		for (String s: databaseSession.getAllTables(connection)){
 			if (!s.equals("Login") && !s.equals("SavedQueries"))
-				listTables.addItem(s);
+				if (s.contains(" "))
+					listTables.addItem("'" + s + "'");
+				else
+					listTables.addItem(s);
 		}
 	}
 
@@ -311,7 +317,7 @@ public class accessData extends JPanel{
 		}
 	}
 
-	
+
 	class mainMenuFunction implements ActionListener{
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -519,7 +525,8 @@ public class accessData extends JPanel{
 						"'" + queryName.getText() + "','" + queryInput.getText()+ "'");
 				updateQueriesList();
 			} catch (SQLException e1) {
-				systemOut.setText("Sorry, that query is already saved");
+				e1.printStackTrace();
+				systemOut.setText("Save Unsuccessful");
 			}
 
 		}
@@ -644,7 +651,7 @@ public class accessData extends JPanel{
 				exception.printStackTrace();
 			}
 		}
-		
+
 	}
 
 }

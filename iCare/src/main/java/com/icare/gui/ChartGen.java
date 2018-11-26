@@ -38,7 +38,6 @@ public class ChartGen {
 				true, // include legend
 				true, false);
 		ChartPanel chartPanel = new ChartPanel(pieChart);
-		//chartPanel.setPreferredSize(parent.getDefaultSize());
 		return chartPanel;
 	}
 	//TODO: Add button to the ChartPanel to return to a menu?

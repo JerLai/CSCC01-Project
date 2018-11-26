@@ -14,6 +14,8 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
+import main.java.com.icare.gui.accessData;
+
 
 public class databaseSession extends databaseAPI{
 
@@ -41,22 +43,22 @@ public class databaseSession extends databaseAPI{
 		return Output;
 	}
 
-	public static TableModel queryTempJTable(Connection connection, String query) throws SQLException{
+	public static ResultSet queryTempJTable(Connection connection, String query) throws SQLException{
 		//Used for mock testing, although we must assume the back end is working, we can still use this to test commands
 		deleteTable(connection, "Scratch_Table");
 		createTempTable(connection, "Scratch_Table", query);
 		return queryJTable(connection, "SELECT * FROM Scratch_Table;");
 	}
 
-	public static TableModel queryJTable(Connection connection, String query) throws SQLException{
+	public static ResultSet queryJTable(Connection connection, String query) throws SQLException{
 		// returns the table model that can be used by JTables given by the sql query
 		String sql = query;
 		PreparedStatement preparedStatement = connection.prepareStatement(sql);
 		ResultSet results = preparedStatement.executeQuery();
-		return buildTableModel(results);
+		return results;
 	}
 
-	private static DefaultTableModel buildTableModel(ResultSet rs) throws SQLException {
+	public static DefaultTableModel buildTableModel(ResultSet rs) throws SQLException {
 		// builds the table model from a query by converting the result set into 2D vectors
 	    ResultSetMetaData metaData = rs.getMetaData();
 	    Vector<String> columnNames = new Vector<String>();
@@ -96,7 +98,7 @@ public class databaseSession extends databaseAPI{
 	}
 
 	public static void createTempTable(Connection connection, String table, String sourceQuery) throws SQLException{
-		String sql = "CREATE TEMPORARY TABLE IF NOT EXISTS " + table + " AS " + sourceQuery +";";
+		String sql = "CREATE TEMPORARY TABLE IF NOT EXISTS '" + table + "' AS " + sourceQuery +";";
 		Statement Statement = connection.createStatement();
 		Statement.executeUpdate(sql);
 		Statement.close();
@@ -116,7 +118,7 @@ public class databaseSession extends databaseAPI{
 
 	public static String findPrimaryKey(Connection connection, String table) throws SQLException{
 		// returns the first (assumed only) primary key of a table
-		String sql = "pragma table_info(" + table + ");";
+		String sql = "pragma table_info('" + table + "');";
 		PreparedStatement preparedStatement = connection.prepareStatement(sql);
 		ResultSet results = preparedStatement.executeQuery();
 		String primaryKey = null;
@@ -142,7 +144,7 @@ public class databaseSession extends databaseAPI{
 	public static ArrayList<String> getAllMandatoryColumnNames(Connection connection, String table) throws SQLException{
 		// returns a list of columns with NOT NULL in their schema
 		ArrayList<String> columns = new ArrayList<String>();
-		String sql = "pragma table_info(" + table + ");";
+		String sql = "pragma table_info('" + table + "');";
 		PreparedStatement preparedStatement = connection.prepareStatement(sql);
 		ResultSet results = preparedStatement.executeQuery();
 		while (results.next()) {
@@ -157,7 +159,7 @@ public class databaseSession extends databaseAPI{
 	public static ArrayList<String> getAllColumnNames(Connection connection, String table) throws SQLException{
 		// returns a list of all column names from a table
 		ArrayList<String> columns = new ArrayList<String>();
-		String sql = "pragma table_info(" + table + ");";
+		String sql = "pragma table_info('" + table + "');";
 		PreparedStatement preparedStatement = connection.prepareStatement(sql);
 		ResultSet results = preparedStatement.executeQuery();
 		String columnData;

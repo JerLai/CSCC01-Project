@@ -44,6 +44,7 @@ public class DatabaseIO {
 				tableExistCols = (ArrayList<String>) databaseAPI
 						.getTableColumnData(connection, fileTable);
 			} catch (Exception e) {
+				System.out.println(fileTable);
 				System.out.println(
 						"Error while checking if table exists for file: " + fileName);
 				e.printStackTrace();
@@ -76,6 +77,7 @@ public class DatabaseIO {
 					databaseAPI.deleteTable(connection, fileTable + "_old");
 					databaseAPI.renameTable(connection, fileTable, fileTable + "_old");
 				} catch (Exception e) {
+					System.out.println(fileTable);
 					System.out
 					.println("Error while saving _old table for file: " + fileName);
 					e.printStackTrace();
@@ -93,10 +95,8 @@ public class DatabaseIO {
 			for (int c = 0; c < row.getLastCellNum(); c++) {
 				cell = row.getCell(c);
 				// determine column headers from 3rd row
-				tableColData += ", ";
 				String cellValue = cell.getRichStringCellValue().getString();
-				tableColData += cellValue;
-				tableColData += " char(255)";
+				tableColData += ", '" + cellValue + "' TEXT";
 				headers += "'" + cellValue;
 				headers += "', ";
 			}
@@ -106,6 +106,7 @@ public class DatabaseIO {
 			try {
 				databaseAPI.createTable(connection, fileTable, tableColData);
 			} catch (Exception e) {
+				System.out.println(tableColData);
 				System.out.println("Error while inserting data for file: " + fileName);
 				e.printStackTrace();
 				return false;
@@ -116,6 +117,8 @@ public class DatabaseIO {
 			String rowValues;
 			for (int r1 = r + 1; r1 <= sheet.getLastRowNum(); r1++) {
 				row = sheet.getRow(r1);
+				if (row == null)
+					break;
 				rowValues = "";
 				// iterate through each cell in the row
 				for (int c1 = 0; c1 < row.getLastCellNum(); c1++) {
